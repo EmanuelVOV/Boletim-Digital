@@ -1,0 +1,478 @@
+/* Reset básico para tirar margens padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo escuro da página (Dark Mode) */
+body {
+    background-color: #111018;
+    color: #f1f1f1;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Cabeçalho com borda e sombra no estilo mangá */
+.cabecalho {
+    text-align: center;
+    background-color: #1a1728;
+    border: 3px solid #d4a373; /* Cor bege/marrom */
+    box-shadow: 5px 5px 0px #6c5ce7; /* Sombra sólida azul arroxeada */
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+.cabecalho h1 {
+    font-size: 2.2rem;
+    color: #6c5ce7; /* Azul arroxeado */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.cabecalho h2 {
+    font-size: 1.3rem;
+    color: #d4a373;
+    margin-bottom: 10px;
+}
+
+.estudante {
+    font-size: 1rem;
+    color: #cccccc;
+}
+
+/* Container do conteúdo principal */
+.conteudo-principal {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Cards de Resumo (Estilo Mangá com contornos fortes) */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 35px;
+}
+
+.card {
+    background-color: #181524;
+    border: 3px solid #6c5ce7; /* Borda azul arroxeada */
+    box-shadow: 4px 4px 0px #d4a373; /* Sombra bege/marrom estilo HQ */
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    color: #d4a373;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.card-valor {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.card-subtexto {
+    display: block;
+    font-size: 0.75rem;
+    color: #9a9ab0;
+    margin-top: 4px;
+}
+
+/* Tabela Respon/* Reset básico para tirar margens padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo escuro da página (Dark Mode) */
+body {
+    background-color: #111018;
+    color: #f1f1f1;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Cabeçalho com borda e sombra no estilo mangá */
+.cabecalho {
+    text-align: center;
+    background-color: #1a1728;
+    border: 3px solid #d4a373; /* Cor bege/marrom */
+    box-shadow: 5px 5px 0px #6c5ce7; /* Sombra sólida azul arroxeada */
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+.cabecalho h1 {
+    font-size: 2.2rem;
+    color: #6c5ce7; /* Azul arroxeado */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.cabecalho h2 {
+    font-size: 1.3rem;
+    color: #d4a373;
+    margin-bottom: 10px;
+}
+
+.estudante {
+    font-size: 1rem;
+    color: #cccccc;
+}
+
+/* Container do conteúdo principal */
+.conteudo-principal {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Cards de Resumo (Estilo Mangá com contornos fortes) */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 35px;
+}
+
+.card {
+    background-color: #181524;
+    border: 3px solid #6c5ce7; /* Borda azul arroxeada */
+    box-shadow: 4px 4px 0px #d4a373; /* Sombra bege/marrom estilo HQ */
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    color: #d4a373;
+    margin-bottom: 8px;
+    text-transfo/* Reset básico para tirar margens padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo escuro da página (Dark Mode) */
+body {
+    background-color: #111018;
+    color: #f1f1f1;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Cabeçalho com borda e sombra no estilo mangá */
+.cabecalho {
+    text-align: center;
+    background-color: #1a1728;
+    border: 3px solid #d4a373; /* Cor bege/marrom */
+    box-shadow: 5px 5px 0px #6c5ce7; /* Sombra sólida azul arroxeada */
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+.cabecalho h1 {
+    font-size: 2.2rem;
+    color: #6c5ce7; /* Azul arroxeado */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.cabecalho h2 {
+    font-size: 1.3rem;
+    color: #d4a373;
+    margin-bottom: 10px;
+}
+
+.estudante {
+    font-size: 1rem;
+    color: #cccccc;
+}
+
+/* Container do conteúdo principal */
+.conteudo-principal {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Cards de Resumo (Estilo Mangá com contornos fortes) */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 35px;
+}
+
+.card {
+    background-color: #181524;
+    border: 3px solid #6c5ce7; /* Borda azul arroxeada */
+    box-shadow: 4px 4px 0px #d4a373; /* Sombra bege/marrom estilo HQ */
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    color: #d4a373;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.card-valor {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.card-subtexto {
+    display: block;
+    font-size: 0.75rem;
+    color: #9a9ab0;
+    margin-top: 4px;
+}
+
+/* Tabela Responsiva */
+.tabela-container {
+    overflow-x: auto; /* Permite rolar para os lados em telas pequenas */
+    background-color: #181524;
+    border: 3px solid #6c5ce7;
+    box-shadow: 5px 5px 0px #d4a373;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    min-width: 600px; /* Garante tamanho mínimo para rolar no celular */
+}
+
+th {
+    background-color: #242038;
+    color: #6c5ce7;
+    border-bottom: 2px solid #d4a373;
+    padding: 12px 8px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #2d2845;
+    font-size: 0.9rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #13111f;
+}
+
+/* Cores para a situação das disciplinas */
+.situacao-bom {
+    color: #52b788;
+    font-weight: bold;
+}
+
+.situacao-atencao {
+    color: #e63946;
+    font-weight: bold;
+}
+
+.situacao-indisponivel {
+    color: #999999;
+    font-style: italic;
+}
+
+/* Ajustes para telas de celular */
+@media (max-width: 600px) {
+    .cabecalho h1 {
+        font-size: 1.7rem;
+    }
+
+    .cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+    }
+
+    .card-valor {
+        font-size: 1.3rem;
+    }
+}rm: uppercase;
+}
+
+.card-valor {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.card-subtexto {
+    display: block;
+    font-size: 0.75rem;
+    color: #9a9ab0;
+    margin-top: 4px;
+}
+
+/* Tabela Responsiva */
+.tabela-container {
+    overflow-x: auto; /* Permite rolar para os lados em telas pequenas */
+    background-color: #181524;
+    border: 3px solid #6c5ce7;
+    box-shadow: 5px 5px 0px #d4a373;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    min-width: 600px; /* Garante tamanho mínimo para rolar no celular */
+}
+
+th {
+    background-color: #242038;
+    color: #6c5ce7;
+    border-bottom: 2px solid #d4a373;
+    padding: 12px 8px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #2d2845;
+    font-size: 0.9rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #13111f;
+}
+
+/* Cores para a situação das disciplinas */
+.situacao-bom {
+    color: #52b788;
+    font-weight: bold;
+}
+
+.situacao-atencao {
+    color: #e63946;
+    font-weight: bold;
+}
+
+.situacao-indisponivel {
+    color: #999999;
+    font-style: italic;
+}
+
+/* Ajustes para telas de celular */
+@media (max-width: 600px) {
+    .cabecalho h1 {
+        font-size: 1.7rem;
+    }
+
+    .cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+    }
+
+    .card-valor {
+        font-size: 1.3rem;
+    }
+}siva */
+.tabela-container {
+    overflow-x: auto; /* Permite rolar para os lados em telas pequenas */
+    background-color: #181524;
+    border: 3px solid #6c5ce7;
+    box-shadow: 5px 5px 0px #d4a373;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    min-width: 600px; /* Garante tamanho mínimo para rolar no celular */
+}
+
+th {
+    background-color: #242038;
+    color: #6c5ce7;
+    border-bottom: 2px solid #d4a373;
+    padding: 12px 8px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #2d2845;
+    font-size: 0.9rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #13111f;
+}
+
+/* Cores para a situação das disciplinas */
+.situacao-bom {
+    color: #52b788;
+    font-weight: bold;
+}
+
+.situacao-atencao {
+    color: #e63946;
+    font-weight: bold;
+}
+
+.situacao-indisponivel {
+    color: #999999;
+    font-style: italic;
+}
+
+/* Ajustes para telas de celular */
+@media (max-width: 600px) {
+    .cabecalho h1 {
+        font-size: 1.7rem;
+    }
+
+    .cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+    }
+
+    .card-valor {
+        font-size: 1.3rem;
+    }
+}

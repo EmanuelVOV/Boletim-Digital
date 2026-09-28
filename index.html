@@ -3,10 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boletim Digital - 8º Ano</title>
     <link rel="stylesheet" href="style.css">
-    <title>Boletim Digital</title>
 </head>
 <body>
-    
+
+    <!-- Cabeçalho do Boletim -->
+    <header class="cabecalho">
+        <h1>Boletim Digital</h1>
+        <h2>8º Ano</h2>
+        <p class="estudante">Estudante: <strong>Estudante Exemplo</strong></p>
+    </header>
+
+    <main class="conteudo-principal">
+        <!-- Área Superior com Cards de Resumo -->
+        <section class="cards-container">
+            <div class="card">
+                <h3>Média Geral</h3>
+                <p id="card-media" class="card-valor">—</p>
+            </div>
+
+            <div class="card">
+                <h3>Total de Faltas</h3>
+                <p id="card-faltas" class="card-valor">—</p>
+            </div>
+
+            <div class="card">
+                <h3>Bom Desempenho</h3>
+                <p id="card-bom-desempenho" class="card-valor">—</p>
+            </div>
+
+            <div class="card">
+                <h3>Precisam de Atenção</h3>
+                <p id="card-atencao" class="card-valor">—</p>
+            </div>
+
+            <div class="card">
+                <h3>Frequência Geral</h3>
+                <p id="card-frequencia" class="card-valor">—</p>
+                <span id="card-frequencia-texto" class="card-subtexto"></span>
+            </div>
+        </section>
+
+        <!-- Tabela de Notas e Faltas -->
+        <section class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>1º Tri</th>
+                        <th>2º Tri</th>
+                        <th>3º Tri</th>
+                        <th>Média</th>
+                        <th>Faltas</th>
+                        <th>Situação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-boletim">
+                    <!-- As 15 linhas das disciplinas serão inseridas automaticamente pelo JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Conexão com o arquivo JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
