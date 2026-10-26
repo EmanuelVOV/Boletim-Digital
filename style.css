@@ -415,4 +415,37 @@ body.light-mode .btn-tema {
     .cards-container { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
     .materia-info-topo { flex-direction: column; align-items: flex-start; gap: 6px; }
     .materia-grid { grid-template-columns: repeat(3, 1fr); }
+}/* Botão do Gráfico no Cabeçalho */
+.btn-grafico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid #27ae60;
+    font-size: 1.2rem;
+    padding: 4px 10px;
+    border-radius: 50%;
+    color: #27ae60;
+    text-decoration: none;
+    transition: transform 0.2s, background-color 0.2s;
+    line-height: 1;
+}
+
+.btn-grafico:hover {
+    transform: scale(1.1);
+    background-color: rgba(39, 174, 96, 0.15);
+}
+
+/* Card do Gráfico */
+.card-grafico {
+    background-color: #1e1233;
+    border: 2px solid #1e5e3a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.light-mode .card-grafico {
+    background-color: #ffffff;
+    border-color: #2e8b57;
 }
