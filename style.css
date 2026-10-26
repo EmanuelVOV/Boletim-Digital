@@ -89,46 +89,69 @@ body {
     margin-top: 4px;
 }
 
-/* CONTAINER DAS MATÉRIAS (Estilo App Escola Paraná) */
+/* CONTAINER DAS MATÉRIAS (Estilo Escola Paraná / Accordion) */
 .materias-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
-/* Card Individual de Cada Matéria */
+/* Card Individual da Matéria */
 .materia-card {
     background-color: #120824;
     border: 2px solid #00f3ff;
-    box-shadow: 0 0 12px rgba(0, 243, 255, 0.3), 4px 4px 0px #7b1fa2;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), 4px 4px 0px #7b1fa2;
     border-radius: 10px;
-    padding: 18px;
+    overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .materia-card:hover {
-    transform: translateY(-2px);
     box-shadow: 0 0 18px #00ff87, 4px 4px 0px #7b1fa2;
 }
 
-/* Topo do Card da Matéria (Nome + Badge de Situação) */
+/* Topo do Card Clicável (Nome + Situação + Setinha) */
 .materia-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #28144d;
-    padding-bottom: 12px;
-    margin-bottom: 15px;
+    padding: 16px;
+    cursor: pointer; /* Transforma a seta do mouse na mãozinha de clique */
+    user-select: none;
+    background-color: #120824;
+    transition: background-color 0.2s;
+}
+
+.materia-header:hover {
+    background-color: #1a0c33;
+}
+
+.materia-info-topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     flex-wrap: wrap;
-    gap: 10px;
 }
 
 .materia-titulo {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #00ff87;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 0 0 5px #00ff87;
+}
+
+/* Setinha indicadora de abrir/fechar */
+.seta-icon {
+    font-size: 1.1rem;
+    color: #00f3ff;
+    transition: transform 0.3s ease; /* Animação suave para girar a seta */
+    margin-left: 10px;
+}
+
+/* Quando o card é ABERTO, a seta gira 180 graus */
+.materia-card.aberto .seta-icon {
+    transform: rotate(180deg);
 }
 
 /* Badge de Situação */
@@ -160,12 +183,20 @@ body {
     border: 1px solid #8a7a9e;
 }
 
-/* Grid com Notas e Faltas */
+/* Grid com Notas e Faltas (Por padrão fica ESCONDIDO) */
 .materia-grid {
-    display: grid;
+    display: none; /* Esconde o painel de notas */
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 12px;
     text-align: center;
+    padding: 16px;
+    background-color: #0d051c;
+    border-top: 2px solid #28144d;
+}
+
+/* Exibe a grid apenas quando a matéria tem a classe 'aberto' */
+.materia-card.aberto .materia-grid {
+    display: grid;
 }
 
 .nota-box {
@@ -210,9 +241,10 @@ body {
         gap: 12px;
     }
 
-    .materia-header {
+    .materia-info-topo {
         flex-direction: column;
         align-items: flex-start;
+        gap: 6px;
     }
 
     .materia-grid {
