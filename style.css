@@ -18,8 +18,8 @@ body {
 .cabecalho {
     text-align: center;
     background-color: #120824;
-    border: 3px solid #00f3ff; /* Azul elétrico */
-    box-shadow: 0 0 15px #00f3ff, 5px 5px 0px #7b1fa2; /* Brilho de raio e sombra roxa */
+    border: 3px solid #00f3ff;
+    box-shadow: 0 0 15px #00f3ff, 5px 5px 0px #7b1fa2;
     padding: 20px;
     margin-bottom: 30px;
     border-radius: 8px;
@@ -27,8 +27,8 @@ body {
 
 .cabecalho h1 {
     font-size: 2.2rem;
-    color: #00ff87; /* Verde neon elétrico */
-    text-shadow: 0 0 8px #00ff87, 0 0 15px #00ff87; /* Efeito de brilho de raio no texto */
+    color: #00ff87;
+    text-shadow: 0 0 8px #00ff87, 0 0 15px #00ff87;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 5px;
@@ -45,13 +45,13 @@ body {
     color: #c0b0d0;
 }
 
-/* Container do conteúdo principal */
+/* Container principal */
 .conteudo-principal {
     max-width: 1000px;
     margin: 0 auto;
 }
 
-/* Cards de Resumo com estilo elétrico */
+/* Cards de Resumo */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -66,13 +66,6 @@ body {
     padding: 15px;
     border-radius: 6px;
     text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-/* Efeito ao passar o mouse por cima do card */
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 20px #00ff87, 4px 4px 0px #7b1fa2;
 }
 
 .card h3 {
@@ -96,63 +89,114 @@ body {
     margin-top: 4px;
 }
 
-/* Tabela Responsiva Elétrica */
-.tabela-container {
-    overflow-x: auto;
+/* CONTAINER DAS MATÉRIAS (Estilo App Escola Paraná) */
+.materias-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Card Individual de Cada Matéria */
+.materia-card {
     background-color: #120824;
-    border: 3px solid #00f3ff;
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), 5px 5px 0px #7b1fa2;
-    border-radius: 8px;
-    padding: 10px;
+    border: 2px solid #00f3ff;
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.3), 4px 4px 0px #7b1fa2;
+    border-radius: 10px;
+    padding: 18px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    min-width: 600px;
+.materia-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px #00ff87, 4px 4px 0px #7b1fa2;
 }
 
-th {
-    background-color: #1c0e38;
+/* Topo do Card da Matéria (Nome + Badge de Situação) */
+.materia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #28144d;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.materia-titulo {
+    font-size: 1.2rem;
     color: #00ff87;
-    border-bottom: 2px solid #00f3ff;
-    padding: 12px 8px;
-    font-size: 0.95rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
     text-shadow: 0 0 5px #00ff87;
 }
 
-td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #28144d;
-    font-size: 0.9rem;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:nth-child(even) {
-    background-color: #0d051c;
-}
-
-/* Cores de Situação */
-.situacao-bom {
-    color: #00ff87;
+/* Badge de Situação */
+.situacao-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: bold;
+    text-transform: uppercase;
+}
+
+.situacao-bom {
+    background-color: rgba(0, 255, 135, 0.15);
+    color: #00ff87;
+    border: 1px solid #00ff87;
     text-shadow: 0 0 5px #00ff87;
 }
 
 .situacao-atencao {
+    background-color: rgba(255, 42, 85, 0.15);
     color: #ff2a55;
-    font-weight: bold;
+    border: 1px solid #ff2a55;
     text-shadow: 0 0 5px #ff2a55;
 }
 
 .situacao-indisponivel {
+    background-color: rgba(138, 122, 158, 0.15);
     color: #8a7a9e;
-    font-style: italic;
+    border: 1px solid #8a7a9e;
+}
+
+/* Grid com Notas e Faltas */
+.materia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    text-align: center;
+}
+
+.nota-box {
+    background-color: #1c0e38;
+    border: 1px solid #28144d;
+    padding: 10px 5px;
+    border-radius: 6px;
+}
+
+.nota-box-destaque {
+    background-color: #241047;
+    border: 1px solid #00f3ff;
+}
+
+.nota-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #b0a8bf;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.nota-valor {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.nota-destaque {
+    color: #00f3ff;
+    text-shadow: 0 0 5px #00f3ff;
 }
 
 /* Ajustes para celular */
@@ -166,7 +210,12 @@ tr:nth-child(even) {
         gap: 12px;
     }
 
-    .card-valor {
-        font-size: 1.3rem;
+    .materia-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .materia-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
