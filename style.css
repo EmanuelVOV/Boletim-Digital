@@ -15,6 +15,83 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* Classe para esconder elementos */
+.escondido {
+    display: none !important;
+}
+
+/* --- TELA DE LOGIN --- */
+.tela-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.login-card {
+    background-color: #1e1233;
+    border: 2px solid #1e5e3a;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.login-card h2 {
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    font-size: 0.9rem;
+    color: #a392c2;
+    margin-bottom: 20px;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #36205c;
+    background-color: #150c24;
+    color: #ffffff;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    outline: none;
+    text-align: center;
+}
+
+.login-card input:focus {
+    border-color: #27ae60;
+}
+
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #27ae60;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.login-card button:hover {
+    background-color: #1e7e45;
+}
+
+.msg-erro {
+    color: #e74c3c !important;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 0 !important;
+    min-height: 20px;
+}
+
 /* Cabeçalho */
 .cabecalho {
     text-align: center;
@@ -250,6 +327,7 @@ body.light-mode {
     color: #211233;
 }
 
+body.light-mode .login-card,
 body.light-mode .cabecalho,
 body.light-mode .card,
 body.light-mode .materia-card {
@@ -258,6 +336,13 @@ body.light-mode .materia-card {
     box-shadow: 0 2px 8px rgba(33, 18, 51, 0.08);
 }
 
+body.light-mode .login-card input {
+    background-color: #f9f6fc;
+    border-color: #d8cbe8;
+    color: #211233;
+}
+
+body.light-mode .login-card h2,
 body.light-mode .cabecalho h1,
 body.light-mode .card h3,
 body.light-mode .materia-titulo,
@@ -266,6 +351,7 @@ body.light-mode .seta-icon {
     color: #1e7e45;
 }
 
+body.light-mode .login-card p,
 body.light-mode .cabecalho h2,
 body.light-mode .estudante,
 body.light-mode .card-subtexto,

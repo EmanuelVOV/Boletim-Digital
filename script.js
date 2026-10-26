@@ -1,4 +1,7 @@
-// Link da sua Planilha do Google Drive
+// SENHA DE ACESSO DO BOLETIM
+const SENHA_CORRETA = "Mell07312002";
+
+// Link da Planilha do Google Drive
 const SPREADSHEET_ID = "1yhQkt8Q6tlIvcg5Fon3mdXZ3cMR-mnTXi7A7gDxXxPc";
 const URL_NOTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Notas`;
 const URL_FALTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Faltas`;
@@ -22,33 +25,54 @@ const dadosBoletimReserva = [
   { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] }
 ];
 
-// LÓGICA DO BOTÃO DE TEMA (CLARO / ESCURO)
+// LÓGICA DE AUTENTICAÇÃO POR SENHA
+function inicializarSeguranca() {
+    const btnEntrar = document.getElementById('btn-entrar');
+    const campoSenha = document.getElementById('campo-senha');
+    const msgErro = document.getElementById('msg-erro');
+    const telaLogin = document.getElementById('tela-login');
+    const conteudoBoletim = document.getElementById('conteudo-boletim');
+
+    function validarSenha() {
+        const senhaDigitada = campoSenha.value;
+
+        if (senhaDigitada === SENHA_CORRETA) {
+            telaLogin.classList.add('escondido');
+            conteudoBoletim.classList.remove('escondido');
+            carregarBoletim(); // Carrega os dados somente após senha correta
+        } else {
+            msgErro.innerText = "Senha incorreta! Tente novamente.";
+            campoSenha.value = "";
+            campoSenha.focus();
+        }
+    }
+
+    btnEntrar.addEventListener('click', validarSenha);
+
+    // Permite pressionar Enter no teclado para entrar
+    campoSenha.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            validarSenha();
+        }
+    });
+}
+
+// LÓGICA DO BOTÃO DE TEMA
 function inicializarTema() {
     const btnTema = document.getElementById('btn-tema');
     if (!btnTema) return;
 
     btnTema.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
-        
-        if (document.body.classList.contains('light-mode')) {
-            btnTema.innerText = '☀️';
-        } else {
-            btnTema.innerText = '🌙';
-        }
+        btnTema.innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     });
 }
 
 function normalizarNota(valor) {
-    if (valor === null || valor === undefined || valor === "" || valor === "—") {
-        return null;
-    }
-
-    if (typeof valor === 'string') {
-        valor = valor.replace(/"/g, '').replace(',', '.').trim();
-    }
+    if (valor === null || valor === undefined || valor === "" || valor === "—") return null;
+    if (typeof valor === 'string') valor = valor.replace(/"/g, '').replace(',', '.').trim();
 
     let numero = Number(valor);
-
     if (isNaN(numero)) return null;
     if (numero > 10 && numero <= 100) numero = numero / 10;
     if (numero < 0 || numero > 10) return null;
@@ -179,9 +203,7 @@ async function carregarBoletim() {
             fetch(URL_FALTAS)
         ]);
 
-        if (!respostaNotas.ok || !respostaFaltas.ok) {
-            throw new Error("Falha ao acessar o Google Drive.");
-        }
+        if (!respostaNotas.ok || !respostaFaltas.ok) throw new Error("Falha ao acessar o Google Drive.");
 
         const textoNotas = await respostaNotas.text();
         const textoFaltas = await respostaFaltas.text();
@@ -222,4 +244,5 @@ async function carregarBoletim() {
     }
 }
 
-carregarBoletim();
+// Inicializa a escuta de senha ao abrir a página
+inicializarSeguranca();

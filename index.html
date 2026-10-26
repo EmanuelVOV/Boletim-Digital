@@ -8,50 +8,63 @@
 </head>
 <body>
 
-    <!-- Cabeçalho do Boletim com Botão de Tema -->
-    <header class="cabecalho">
-        <div class="cabecalho-topo">
-            <h1>Boletim Digital</h1>
-            <button id="btn-tema" class="btn-tema" title="Alternar tema">🌙</button>
+    <!-- Tela de Acesso / Login -->
+    <div id="tela-login" class="tela-login">
+        <div class="login-card">
+            <h2>Acesso Restrito 🔐</h2>
+            <p>Digite a senha para visualizar o boletim:</p>
+            <input type="password" id="campo-senha" placeholder="Digite a senha..." autofocus>
+            <button id="btn-entrar">Entrar</button>
+            <p id="msg-erro" class="msg-erro"></p>
         </div>
-        <h2>8º Ano</h2>
-        <p class="estudante">Estudante: <strong>Estudante Exemplo</strong></p>
-    </header>
+    </div>
 
-    <main class="conteudo-principal">
-        <!-- Cards de Resumo -->
-        <section class="cards-container">
-            <div class="card">
-                <h3>Média Geral</h3>
-                <p id="card-media" class="card-valor">—</p>
+    <!-- Conteúdo do Boletim (Escondido até autenticar) -->
+    <div id="conteudo-boletim" class="escondido">
+        <header class="cabecalho">
+            <div class="cabecalho-topo">
+                <h1>Boletim Digital</h1>
+                <button id="btn-tema" class="btn-tema" title="Alternar tema">🌙</button>
             </div>
+            <h2>8º Ano</h2>
+            <p class="estudante">Estudante: <strong>Estudante Exemplo</strong></p>
+        </header>
 
-            <div class="card">
-                <h3>Total de Faltas</h3>
-                <p id="card-faltas" class="card-valor">—</p>
-            </div>
+        <main class="conteudo-principal">
+            <!-- Cards de Resumo -->
+            <section class="cards-container">
+                <div class="card">
+                    <h3>Média Geral</h3>
+                    <p id="card-media" class="card-valor">—</p>
+                </div>
 
-            <div class="card">
-                <h3>Bom Desempenho</h3>
-                <p id="card-bom-desempenho" class="card-valor">—</p>
-            </div>
+                <div class="card">
+                    <h3>Total de Faltas</h3>
+                    <p id="card-faltas" class="card-valor">—</p>
+                </div>
 
-            <div class="card">
-                <h3>Precisam de Atenção</h3>
-                <p id="card-atencao" class="card-valor">—</p>
-            </div>
+                <div class="card">
+                    <h3>Bom Desempenho</h3>
+                    <p id="card-bom-desempenho" class="card-valor">—</p>
+                </div>
 
-            <div class="card">
-                <h3>Frequência Geral</h3>
-                <p id="card-frequencia" class="card-valor">—</p>
-                <span id="card-frequencia-texto" class="card-subtexto"></span>
-            </div>
-        </section>
+                <div class="card">
+                    <h3>Precisam de Atenção</h3>
+                    <p id="card-atencao" class="card-valor">—</p>
+                </div>
 
-        <!-- Sessões por Matéria -->
-        <section id="materias-container" class="materias-container">
-        </section>
-    </main>
+                <div class="card">
+                    <h3>Frequência Geral</h3>
+                    <p id="card-frequencia" class="card-valor">—</p>
+                    <span id="card-frequencia-texto" class="card-subtexto"></span>
+                </div>
+            </section>
+
+            <!-- Sessões por Matéria -->
+            <section id="materias-container" class="materias-container">
+            </section>
+        </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
