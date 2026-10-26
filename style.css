@@ -6,20 +6,19 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Fundo escuro tempestuoso */
+/* Fundo roxo escuro profundo */
 body {
-    background-color: #07030d;
-    color: #f0f0f5;
+    background-color: #0f0a18;
+    color: #e6e1f0;
     padding: 20px;
     min-height: 100vh;
 }
 
-/* Cabeçalho com brilho de raio */
+/* Cabeçalho com roxo e borda verde escuro */
 .cabecalho {
     text-align: center;
-    background-color: #120824;
-    border: 3px solid #00f3ff;
-    box-shadow: 0 0 15px #00f3ff, 5px 5px 0px #7b1fa2;
+    background-color: #1e1233;
+    border: 2px solid #1e5e3a;
     padding: 20px;
     margin-bottom: 30px;
     border-radius: 8px;
@@ -27,8 +26,7 @@ body {
 
 .cabecalho h1 {
     font-size: 2.2rem;
-    color: #00ff87;
-    text-shadow: 0 0 8px #00ff87, 0 0 15px #00ff87;
+    color: #27ae60;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 5px;
@@ -36,13 +34,13 @@ body {
 
 .cabecalho h2 {
     font-size: 1.3rem;
-    color: #00f3ff;
+    color: #bfa8e0;
     margin-bottom: 10px;
 }
 
 .estudante {
     font-size: 1rem;
-    color: #c0b0d0;
+    color: #a392c2;
 }
 
 /* Container principal */
@@ -60,9 +58,8 @@ body {
 }
 
 .card {
-    background-color: #120824;
-    border: 2px solid #00f3ff;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.4), 4px 4px 0px #7b1fa2;
+    background-color: #1e1233;
+    border: 2px solid #1e5e3a;
     padding: 15px;
     border-radius: 6px;
     text-align: center;
@@ -70,7 +67,7 @@ body {
 
 .card h3 {
     font-size: 0.9rem;
-    color: #00ff87;
+    color: #27ae60;
     margin-bottom: 8px;
     text-transform: uppercase;
 }
@@ -79,17 +76,16 @@ body {
     font-size: 1.6rem;
     font-weight: bold;
     color: #ffffff;
-    text-shadow: 0 0 5px #00f3ff;
 }
 
 .card-subtexto {
     display: block;
     font-size: 0.75rem;
-    color: #b0a8bf;
+    color: #a392c2;
     margin-top: 4px;
 }
 
-/* CONTAINER DAS MATÉRIAS (Estilo Escola Paraná / Accordion) */
+/* CONTAINER DAS MATÉRIAS */
 .materias-container {
     display: flex;
     flex-direction: column;
@@ -98,32 +94,31 @@ body {
 
 /* Card Individual da Matéria */
 .materia-card {
-    background-color: #120824;
-    border: 2px solid #00f3ff;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), 4px 4px 0px #7b1fa2;
-    border-radius: 10px;
+    background-color: #1e1233;
+    border: 2px solid #1e5e3a;
+    border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: background-color 0.2s;
 }
 
 .materia-card:hover {
-    box-shadow: 0 0 18px #00ff87, 4px 4px 0px #7b1fa2;
+    border-color: #27ae60;
 }
 
-/* Topo do Card Clicável (Nome + Situação + Setinha) */
+/* Topo do Card Clicável */
 .materia-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    cursor: pointer; /* Transforma a seta do mouse na mãozinha de clique */
+    cursor: pointer;
     user-select: none;
-    background-color: #120824;
+    background-color: #1e1233;
     transition: background-color 0.2s;
 }
 
 .materia-header:hover {
-    background-color: #1a0c33;
+    background-color: #281845;
 }
 
 .materia-info-topo {
@@ -135,26 +130,24 @@ body {
 
 .materia-titulo {
     font-size: 1.1rem;
-    color: #00ff87;
+    color: #27ae60;
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-shadow: 0 0 5px #00ff87;
 }
 
 /* Setinha indicadora de abrir/fechar */
 .seta-icon {
     font-size: 1.1rem;
-    color: #00f3ff;
-    transition: transform 0.3s ease; /* Animação suave para girar a seta */
+    color: #27ae60;
+    transition: transform 0.3s ease;
     margin-left: 10px;
 }
 
-/* Quando o card é ABERTO, a seta gira 180 graus */
 .materia-card.aberto .seta-icon {
     transform: rotate(180deg);
 }
 
-/* Badge de Situação */
+/* Badges de Situação */
 .situacao-badge {
     padding: 4px 10px;
     border-radius: 20px;
@@ -164,90 +157,24 @@ body {
 }
 
 .situacao-bom {
-    background-color: rgba(0, 255, 135, 0.15);
-    color: #00ff87;
-    border: 1px solid #00ff87;
-    text-shadow: 0 0 5px #00ff87;
+    background-color: #143d26;
+    color: #27ae60;
+    border: 1px solid #1e5e3a;
 }
 
 .situacao-atencao {
-    background-color: rgba(255, 42, 85, 0.15);
-    color: #ff2a55;
-    border: 1px solid #ff2a55;
-    text-shadow: 0 0 5px #ff2a55;
+    background-color: #4a1521;
+    color: #e74c3c;
+    border: 1px solid #922b21;
 }
 
 .situacao-indisponivel {
-    background-color: rgba(138, 122, 158, 0.15);
-    color: #8a7a9e;
-    border: 1px solid #8a7a9e;
+    background-color: #2c223b;
+    color: #8c7ba6;
+    border: 1px solid #483861;
 }
 
-/* Grid com Notas e Faltas (Por padrão fica ESCONDIDO) */
+/* Grid com Notas e Faltas (Escondido por padrão) */
 .materia-grid {
-    display: none; /* Esconde o painel de notas */
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 12px;
-    text-align: center;
-    padding: 16px;
-    background-color: #0d051c;
-    border-top: 2px solid #28144d;
-}
-
-/* Exibe a grid apenas quando a matéria tem a classe 'aberto' */
-.materia-card.aberto .materia-grid {
-    display: grid;
-}
-
-.nota-box {
-    background-color: #1c0e38;
-    border: 1px solid #28144d;
-    padding: 10px 5px;
-    border-radius: 6px;
-}
-
-.nota-box-destaque {
-    background-color: #241047;
-    border: 1px solid #00f3ff;
-}
-
-.nota-label {
-    display: block;
-    font-size: 0.75rem;
-    color: #b0a8bf;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-}
-
-.nota-valor {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.nota-destaque {
-    color: #00f3ff;
-    text-shadow: 0 0 5px #00f3ff;
-}
-
-/* Ajustes para celular */
-@media (max-width: 600px) {
-    .cabecalho h1 {
-        font-size: 1.7rem;
-    }
-
-    .cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 12px;
-    }
-
-    .materia-info-topo {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-
-    .materia-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
+    display: none;
+    grid-template
