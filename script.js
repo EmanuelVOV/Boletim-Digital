@@ -3,7 +3,7 @@ const SPREADSHEET_ID = "1yhQkt8Q6tlIvcg5Fon3mdXZ3cMR-mnTXi7A7gDxXxPc";
 const URL_NOTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Notas`;
 const URL_FALTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Faltas`;
 
-// DADOS PADRÃO DE RESERVA (Plano B caso a internet ou o Drive falhem)
+// DADOS DE RESERVA (Plano B)
 const dadosBoletimReserva = [
   { disciplina: "Língua Portuguesa", tri1: 82, tri2: "7,8", tri3: 85, faltas: [2, 1, 1] },
   { disciplina: "Matemática", tri1: 52, tri2: "5,8", tri3: null, faltas: [3, 2, 1] },
@@ -22,7 +22,22 @@ const dadosBoletimReserva = [
   { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] }
 ];
 
-// Função para converter/normalizar notas para a escala de 0 a 10
+// LÓGICA DO BOTÃO DE TEMA (CLARO / ESCURO)
+function inicializarTema() {
+    const btnTema = document.getElementById('btn-tema');
+    if (!btnTema) return;
+
+    btnTema.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        
+        if (document.body.classList.contains('light-mode')) {
+            btnTema.innerText = '☀️';
+        } else {
+            btnTema.innerText = '🌙';
+        }
+    });
+}
+
 function normalizarNota(valor) {
     if (valor === null || valor === undefined || valor === "" || valor === "—") {
         return null;
@@ -34,22 +49,13 @@ function normalizarNota(valor) {
 
     let numero = Number(valor);
 
-    if (isNaN(numero)) {
-        return null;
-    }
-
-    if (numero > 10 && numero <= 100) {
-        numero = numero / 10;
-    }
-
-    if (numero < 0 || numero > 10) {
-        return null;
-    }
+    if (isNaN(numero)) return null;
+    if (numero > 10 && numero <= 100) numero = numero / 10;
+    if (numero < 0 || numero > 10) return null;
 
     return numero;
 }
 
-// Converte CSV em matriz de dados
 function parseCSV(textoCSV) {
     const linhas = textoCSV.split('\n');
     return linhas.map(linha => {
@@ -59,15 +65,11 @@ function parseCSV(textoCSV) {
     });
 }
 
-// Formata o número da nota para exibição com vírgula
 function formatarExibicao(nota) {
-    if (nota === null) {
-        return "—";
-    }
+    if (nota === null) return "—";
     return nota.toFixed(1).replace('.', ',');
 }
 
-// Renderiza a lista de matérias na tela
 function renderizarMaterias(lista) {
     const containerMaterias = document.getElementById('materias-container');
     containerMaterias.innerHTML = '';
@@ -83,12 +85,10 @@ function renderizarMaterias(lista) {
         const n2 = normalizarNota(item.tri2);
         const n3 = normalizarNota(item.tri3);
 
-        let faltasTotal = 0;
-        if (Array.isArray(item.faltas)) {
-            faltasTotal = item.faltas.reduce((a, b) => a + b, 0);
-        } else {
-            faltasTotal = Number(item.faltas) || 0;
-        }
+        let faltasTotal = Array.isArray(item.faltas)
+            ? item.faltas.reduce((a, b) => a + b, 0)
+            : Number(item.faltas) || 0;
+
         totalFaltasGeral += faltasTotal;
 
         const notasDisponiveis = [n1, n2, n3].filter(n => n !== null);
@@ -150,7 +150,6 @@ function renderizarMaterias(lista) {
             </div>
         `;
 
-        // Evento de clique para abrir/fechar as notas ao clicar no cabeçalho
         const header = cardMateria.querySelector('.materia-header');
         header.addEventListener('click', () => {
             cardMateria.classList.toggle('aberto');
@@ -159,7 +158,6 @@ function renderizarMaterias(lista) {
         containerMaterias.appendChild(cardMateria);
     });
 
-    // Atualiza os Cards de Resumo no topo
     const mediaGeralFinal = disciplinasComMedia > 0 
         ? (somaDasMedias / disciplinasComMedia).toFixed(1).replace('.', ',') 
         : "—";
@@ -168,14 +166,13 @@ function renderizarMaterias(lista) {
     document.getElementById('card-faltas').innerText = totalFaltasGeral;
     document.getElementById('card-bom-desempenho').innerText = bomDesempenhoCount;
     document.getElementById('card-atencao').innerText = atencaoCount;
-
-    // Frequência demonstrativa
     document.getElementById('card-frequencia').innerText = "92%";
     document.getElementById('card-frequencia-texto').innerText = "Frequência adequada";
 }
 
-// Função para buscar dados do Google Drive ou usar o Plano B de reserva
 async function carregarBoletim() {
+    inicializarTema();
+
     try {
         const [respostaNotas, respostaFaltas] = await Promise.all([
             fetch(URL_NOTAS),
@@ -220,7 +217,7 @@ async function carregarBoletim() {
         }
 
     } catch (erro) {
-        console.warn("Usando dados locais de reserva (Plano B):", erro);
+        console.warn("Usando dados locais de reserva:", erro);
         renderizarMaterias(dadosBoletimReserva);
     }
 }

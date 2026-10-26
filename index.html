@@ -8,15 +8,18 @@
 </head>
 <body>
 
-    <!-- Cabeçalho do Boletim -->
+    <!-- Cabeçalho do Boletim com Botão de Tema -->
     <header class="cabecalho">
-        <h1>Boletim Digital</h1>
+        <div class="cabecalho-topo">
+            <h1>Boletim Digital</h1>
+            <button id="btn-tema" class="btn-tema" title="Alternar tema">🌙</button>
+        </div>
         <h2>8º Ano</h2>
         <p class="estudante">Estudante: <strong>Estudante Exemplo</strong></p>
     </header>
 
     <main class="conteudo-principal">
-        <!-- Área Superior com Cards de Resumo -->
+        <!-- Cards de Resumo -->
         <section class="cards-container">
             <div class="card">
                 <h3>Média Geral</h3>
@@ -45,13 +48,11 @@
             </div>
         </section>
 
-        <!-- Sessões por Matéria (Estilo App Escola Paraná) -->
+        <!-- Sessões por Matéria -->
         <section id="materias-container" class="materias-container">
-            <!-- Cada matéria vai aparecer em um card/sessão individual gerado pelo JavaScript -->
         </section>
     </main>
 
-    <!-- Conexão com o arquivo JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>

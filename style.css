@@ -6,15 +6,16 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Fundo roxo escuro profundo */
+/* --- MODO ESCURO (Padrão) --- */
 body {
     background-color: #0f0a18;
     color: #e6e1f0;
     padding: 20px;
     min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Cabeçalho com roxo e borda verde escuro */
+/* Cabeçalho */
 .cabecalho {
     text-align: center;
     background-color: #1e1233;
@@ -22,6 +23,15 @@ body {
     padding: 20px;
     margin-bottom: 30px;
     border-radius: 8px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.cabecalho-topo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    position: relative;
 }
 
 .cabecalho h1 {
@@ -30,6 +40,23 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 5px;
+}
+
+/* Botão de Tema */
+.btn-tema {
+    background: transparent;
+    border: 2px solid #27ae60;
+    font-size: 1.3rem;
+    padding: 4px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    line-height: 1;
+}
+
+.btn-tema:hover {
+    transform: scale(1.1);
+    background-color: rgba(39, 174, 96, 0.15);
 }
 
 .cabecalho h2 {
@@ -63,6 +90,7 @@ body {
     padding: 15px;
     border-radius: 6px;
     text-align: center;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .card h3 {
@@ -85,27 +113,25 @@ body {
     margin-top: 4px;
 }
 
-/* CONTAINER DAS MATÉRIAS */
+/* Container de Matérias */
 .materias-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-/* Card Individual da Matéria */
 .materia-card {
     background-color: #1e1233;
     border: 2px solid #1e5e3a;
     border-radius: 8px;
     overflow: hidden;
-    transition: background-color 0.2s;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .materia-card:hover {
     border-color: #27ae60;
 }
 
-/* Topo do Card Clicável */
 .materia-header {
     display: flex;
     justify-content: space-between;
@@ -135,7 +161,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* Setinha indicadora de abrir/fechar */
 .seta-icon {
     font-size: 1.1rem;
     color: #27ae60;
@@ -147,7 +172,7 @@ body {
     transform: rotate(180deg);
 }
 
-/* Badges de Situação */
+/* Badges */
 .situacao-badge {
     padding: 4px 10px;
     border-radius: 20px;
@@ -174,7 +199,7 @@ body {
     border: 1px solid #483861;
 }
 
-/* Grid com Notas e Faltas (Escondido por padrão) */
+/* Grid de Notas */
 .materia-grid {
     display: none;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -185,7 +210,6 @@ body {
     border-top: 1px solid #2e1b4d;
 }
 
-/* Exibe a grid quando a matéria está aberta */
 .materia-card.aberto .materia-grid {
     display: grid !important;
 }
@@ -220,24 +244,89 @@ body {
     color: #27ae60;
 }
 
-/* Ajustes para celular */
+/* --- MODO CLARO --- */
+body.light-mode {
+    background-color: #f3effa;
+    color: #211233;
+}
+
+body.light-mode .cabecalho,
+body.light-mode .card,
+body.light-mode .materia-card {
+    background-color: #ffffff;
+    border-color: #2e8b57;
+    box-shadow: 0 2px 8px rgba(33, 18, 51, 0.08);
+}
+
+body.light-mode .cabecalho h1,
+body.light-mode .card h3,
+body.light-mode .materia-titulo,
+body.light-mode .nota-destaque,
+body.light-mode .seta-icon {
+    color: #1e7e45;
+}
+
+body.light-mode .cabecalho h2,
+body.light-mode .estudante,
+body.light-mode .card-subtexto,
+body.light-mode .nota-label {
+    color: #5d4975;
+}
+
+body.light-mode .card-valor,
+body.light-mode .nota-valor {
+    color: #211233;
+}
+
+body.light-mode .materia-header {
+    background-color: #ffffff;
+}
+
+body.light-mode .materia-header:hover {
+    background-color: #f5f0fc;
+}
+
+body.light-mode .materia-grid {
+    background-color: #faf7ff;
+    border-top-color: #e5dcf2;
+}
+
+body.light-mode .nota-box {
+    background-color: #efe8f7;
+    border-color: #d8cbe8;
+}
+
+body.light-mode .nota-box-destaque {
+    background-color: #e6f4ea;
+    border-color: #2e8b57;
+}
+
+body.light-mode .situacao-bom {
+    background-color: #e6f4ea;
+    color: #1e7e45;
+    border-color: #2e8b57;
+}
+
+body.light-mode .situacao-atencao {
+    background-color: #fce8e6;
+    color: #c0392b;
+    border-color: #e74c3c;
+}
+
+body.light-mode .situacao-indisponivel {
+    background-color: #eae5f2;
+    color: #6c5a85;
+    border-color: #c4b5db;
+}
+
+body.light-mode .btn-tema {
+    border-color: #1e7e45;
+}
+
+/* Ajuste mobile */
 @media (max-width: 600px) {
-    .cabecalho h1 {
-        font-size: 1.7rem;
-    }
-
-    .cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 12px;
-    }
-
-    .materia-info-topo {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-
-    .materia-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .cabecalho h1 { font-size: 1.7rem; }
+    .cards-container { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+    .materia-info-topo { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .materia-grid { grid-template-columns: repeat(3, 1fr); }
 }
