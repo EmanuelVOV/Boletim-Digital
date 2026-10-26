@@ -177,4 +177,67 @@ body {
 /* Grid com Notas e Faltas (Escondido por padrão) */
 .materia-grid {
     display: none;
-    grid-template
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    text-align: center;
+    padding: 16px;
+    background-color: #150c24;
+    border-top: 1px solid #2e1b4d;
+}
+
+/* Exibe a grid quando a matéria está aberta */
+.materia-card.aberto .materia-grid {
+    display: grid !important;
+}
+
+.nota-box {
+    background-color: #24153d;
+    border: 1px solid #36205c;
+    padding: 10px 5px;
+    border-radius: 6px;
+}
+
+.nota-box-destaque {
+    background-color: #183324;
+    border: 1px solid #1e5e3a;
+}
+
+.nota-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #a392c2;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.nota-valor {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.nota-destaque {
+    color: #27ae60;
+}
+
+/* Ajustes para celular */
+@media (max-width: 600px) {
+    .cabecalho h1 {
+        font-size: 1.7rem;
+    }
+
+    .cards-container {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+    }
+
+    .materia-info-topo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .materia-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
