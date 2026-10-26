@@ -1,4 +1,4 @@
-/* Reset básico para tirar margens padrão */
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
@@ -6,20 +6,20 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Fundo escuro da página (Dark Mode) */
+/* Fundo escuro tempestuoso */
 body {
-    background-color: #111018;
-    color: #f1f1f1;
+    background-color: #07030d;
+    color: #f0f0f5;
     padding: 20px;
     min-height: 100vh;
 }
 
-/* Cabeçalho com borda e sombra no estilo mangá */
+/* Cabeçalho com brilho de raio */
 .cabecalho {
     text-align: center;
-    background-color: #1a1728;
-    border: 3px solid #d4a373; /* Cor bege/marrom */
-    box-shadow: 5px 5px 0px #6c5ce7; /* Sombra sólida azul arroxeada */
+    background-color: #120824;
+    border: 3px solid #00f3ff; /* Azul elétrico */
+    box-shadow: 0 0 15px #00f3ff, 5px 5px 0px #7b1fa2; /* Brilho de raio e sombra roxa */
     padding: 20px;
     margin-bottom: 30px;
     border-radius: 8px;
@@ -27,7 +27,8 @@ body {
 
 .cabecalho h1 {
     font-size: 2.2rem;
-    color: #6c5ce7; /* Azul arroxeado */
+    color: #00ff87; /* Verde neon elétrico */
+    text-shadow: 0 0 8px #00ff87, 0 0 15px #00ff87; /* Efeito de brilho de raio no texto */
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 5px;
@@ -35,13 +36,13 @@ body {
 
 .cabecalho h2 {
     font-size: 1.3rem;
-    color: #d4a373;
+    color: #00f3ff;
     margin-bottom: 10px;
 }
 
 .estudante {
     font-size: 1rem;
-    color: #cccccc;
+    color: #c0b0d0;
 }
 
 /* Container do conteúdo principal */
@@ -50,7 +51,7 @@ body {
     margin: 0 auto;
 }
 
-/* Cards de Resumo (Estilo Mangá com contornos fortes) */
+/* Cards de Resumo com estilo elétrico */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -59,17 +60,24 @@ body {
 }
 
 .card {
-    background-color: #181524;
-    border: 3px solid #6c5ce7; /* Borda azul arroxeada */
-    box-shadow: 4px 4px 0px #d4a373; /* Sombra bege/marrom estilo HQ */
+    background-color: #120824;
+    border: 2px solid #00f3ff;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.4), 4px 4px 0px #7b1fa2;
     padding: 15px;
     border-radius: 6px;
     text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Efeito ao passar o mouse por cima do card */
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px #00ff87, 4px 4px 0px #7b1fa2;
 }
 
 .card h3 {
     font-size: 0.9rem;
-    color: #d4a373;
+    color: #00ff87;
     margin-bottom: 8px;
     text-transform: uppercase;
 }
@@ -78,183 +86,22 @@ body {
     font-size: 1.6rem;
     font-weight: bold;
     color: #ffffff;
+    text-shadow: 0 0 5px #00f3ff;
 }
 
 .card-subtexto {
     display: block;
     font-size: 0.75rem;
-    color: #9a9ab0;
+    color: #b0a8bf;
     margin-top: 4px;
 }
 
-/* Tabela Respon/* Reset básico para tirar margens padrão */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Fundo escuro da página (Dark Mode) */
-body {
-    background-color: #111018;
-    color: #f1f1f1;
-    padding: 20px;
-    min-height: 100vh;
-}
-
-/* Cabeçalho com borda e sombra no estilo mangá */
-.cabecalho {
-    text-align: center;
-    background-color: #1a1728;
-    border: 3px solid #d4a373; /* Cor bege/marrom */
-    box-shadow: 5px 5px 0px #6c5ce7; /* Sombra sólida azul arroxeada */
-    padding: 20px;
-    margin-bottom: 30px;
-    border-radius: 8px;
-}
-
-.cabecalho h1 {
-    font-size: 2.2rem;
-    color: #6c5ce7; /* Azul arroxeado */
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 5px;
-}
-
-.cabecalho h2 {
-    font-size: 1.3rem;
-    color: #d4a373;
-    margin-bottom: 10px;
-}
-
-.estudante {
-    font-size: 1rem;
-    color: #cccccc;
-}
-
-/* Container do conteúdo principal */
-.conteudo-principal {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* Cards de Resumo (Estilo Mangá com contornos fortes) */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 16px;
-    margin-bottom: 35px;
-}
-
-.card {
-    background-color: #181524;
-    border: 3px solid #6c5ce7; /* Borda azul arroxeada */
-    box-shadow: 4px 4px 0px #d4a373; /* Sombra bege/marrom estilo HQ */
-    padding: 15px;
-    border-radius: 6px;
-    text-align: center;
-}
-
-.card h3 {
-    font-size: 0.9rem;
-    color: #d4a373;
-    margin-bottom: 8px;
-    text-transfo/* Reset básico para tirar margens padrão */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Fundo escuro da página (Dark Mode) */
-body {
-    background-color: #111018;
-    color: #f1f1f1;
-    padding: 20px;
-    min-height: 100vh;
-}
-
-/* Cabeçalho com borda e sombra no estilo mangá */
-.cabecalho {
-    text-align: center;
-    background-color: #1a1728;
-    border: 3px solid #d4a373; /* Cor bege/marrom */
-    box-shadow: 5px 5px 0px #6c5ce7; /* Sombra sólida azul arroxeada */
-    padding: 20px;
-    margin-bottom: 30px;
-    border-radius: 8px;
-}
-
-.cabecalho h1 {
-    font-size: 2.2rem;
-    color: #6c5ce7; /* Azul arroxeado */
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 5px;
-}
-
-.cabecalho h2 {
-    font-size: 1.3rem;
-    color: #d4a373;
-    margin-bottom: 10px;
-}
-
-.estudante {
-    font-size: 1rem;
-    color: #cccccc;
-}
-
-/* Container do conteúdo principal */
-.conteudo-principal {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* Cards de Resumo (Estilo Mangá com contornos fortes) */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 16px;
-    margin-bottom: 35px;
-}
-
-.card {
-    background-color: #181524;
-    border: 3px solid #6c5ce7; /* Borda azul arroxeada */
-    box-shadow: 4px 4px 0px #d4a373; /* Sombra bege/marrom estilo HQ */
-    padding: 15px;
-    border-radius: 6px;
-    text-align: center;
-}
-
-.card h3 {
-    font-size: 0.9rem;
-    color: #d4a373;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-}
-
-.card-valor {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.card-subtexto {
-    display: block;
-    font-size: 0.75rem;
-    color: #9a9ab0;
-    margin-top: 4px;
-}
-
-/* Tabela Responsiva */
+/* Tabela Responsiva Elétrica */
 .tabela-container {
-    overflow-x: auto; /* Permite rolar para os lados em telas pequenas */
-    background-color: #181524;
-    border: 3px solid #6c5ce7;
-    box-shadow: 5px 5px 0px #d4a373;
+    overflow-x: auto;
+    background-color: #120824;
+    border: 3px solid #00f3ff;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), 5px 5px 0px #7b1fa2;
     border-radius: 8px;
     padding: 10px;
 }
@@ -263,21 +110,22 @@ table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
-    min-width: 600px; /* Garante tamanho mínimo para rolar no celular */
+    min-width: 600px;
 }
 
 th {
-    background-color: #242038;
-    color: #6c5ce7;
-    border-bottom: 2px solid #d4a373;
+    background-color: #1c0e38;
+    color: #00ff87;
+    border-bottom: 2px solid #00f3ff;
     padding: 12px 8px;
     font-size: 0.95rem;
     text-transform: uppercase;
+    text-shadow: 0 0 5px #00ff87;
 }
 
 td {
     padding: 10px 8px;
-    border-bottom: 1px solid #2d2845;
+    border-bottom: 1px solid #28144d;
     font-size: 0.9rem;
 }
 
@@ -286,182 +134,28 @@ tr:last-child td {
 }
 
 tr:nth-child(even) {
-    background-color: #13111f;
+    background-color: #0d051c;
 }
 
-/* Cores para a situação das disciplinas */
+/* Cores de Situação */
 .situacao-bom {
-    color: #52b788;
+    color: #00ff87;
     font-weight: bold;
+    text-shadow: 0 0 5px #00ff87;
 }
 
 .situacao-atencao {
-    color: #e63946;
+    color: #ff2a55;
     font-weight: bold;
+    text-shadow: 0 0 5px #ff2a55;
 }
 
 .situacao-indisponivel {
-    color: #999999;
+    color: #8a7a9e;
     font-style: italic;
 }
 
-/* Ajustes para telas de celular */
-@media (max-width: 600px) {
-    .cabecalho h1 {
-        font-size: 1.7rem;
-    }
-
-    .cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 12px;
-    }
-
-    .card-valor {
-        font-size: 1.3rem;
-    }
-}rm: uppercase;
-}
-
-.card-valor {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.card-subtexto {
-    display: block;
-    font-size: 0.75rem;
-    color: #9a9ab0;
-    margin-top: 4px;
-}
-
-/* Tabela Responsiva */
-.tabela-container {
-    overflow-x: auto; /* Permite rolar para os lados em telas pequenas */
-    background-color: #181524;
-    border: 3px solid #6c5ce7;
-    box-shadow: 5px 5px 0px #d4a373;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    min-width: 600px; /* Garante tamanho mínimo para rolar no celular */
-}
-
-th {
-    background-color: #242038;
-    color: #6c5ce7;
-    border-bottom: 2px solid #d4a373;
-    padding: 12px 8px;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-}
-
-td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #2d2845;
-    font-size: 0.9rem;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:nth-child(even) {
-    background-color: #13111f;
-}
-
-/* Cores para a situação das disciplinas */
-.situacao-bom {
-    color: #52b788;
-    font-weight: bold;
-}
-
-.situacao-atencao {
-    color: #e63946;
-    font-weight: bold;
-}
-
-.situacao-indisponivel {
-    color: #999999;
-    font-style: italic;
-}
-
-/* Ajustes para telas de celular */
-@media (max-width: 600px) {
-    .cabecalho h1 {
-        font-size: 1.7rem;
-    }
-
-    .cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 12px;
-    }
-
-    .card-valor {
-        font-size: 1.3rem;
-    }
-}siva */
-.tabela-container {
-    overflow-x: auto; /* Permite rolar para os lados em telas pequenas */
-    background-color: #181524;
-    border: 3px solid #6c5ce7;
-    box-shadow: 5px 5px 0px #d4a373;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    min-width: 600px; /* Garante tamanho mínimo para rolar no celular */
-}
-
-th {
-    background-color: #242038;
-    color: #6c5ce7;
-    border-bottom: 2px solid #d4a373;
-    padding: 12px 8px;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-}
-
-td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #2d2845;
-    font-size: 0.9rem;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:nth-child(even) {
-    background-color: #13111f;
-}
-
-/* Cores para a situação das disciplinas */
-.situacao-bom {
-    color: #52b788;
-    font-weight: bold;
-}
-
-.situacao-atencao {
-    color: #e63946;
-    font-weight: bold;
-}
-
-.situacao-indisponivel {
-    color: #999999;
-    font-style: italic;
-}
-
-/* Ajustes para telas de celular */
+/* Ajustes para celular */
 @media (max-width: 600px) {
     .cabecalho h1 {
         font-size: 1.7rem;
