@@ -237,7 +237,6 @@ function atualizarKPIs() {
 
     const mediaGeral = qtdMedias > 0 ? (somaMedias / qtdMedias).toFixed(1).replace('.', ',') : "—";
 
-    // Cálculo dinâmico de frequência baseado em carga horária anual estimada (800 aulas)
     const aulasTotais = 800;
     const freqNum = Math.max(0, Math.min(100, ((aulasTotais - somaFaltas) / aulasTotais) * 100));
     const freqStr = freqNum.toFixed(1).replace('.', ',') + "%";
@@ -321,12 +320,10 @@ function renderizarListaMaterias() {
             </div>
         `;
 
-        // Abrir/Fechar card
         card.querySelector('.materia-header').addEventListener('click', () => {
             card.classList.toggle('aberto');
         });
 
-        // Eventos de edição nas notas
         card.querySelectorAll('.input-nota').forEach(input => {
             input.addEventListener('click', e => e.stopPropagation());
 
@@ -354,7 +351,6 @@ function renderizarListaMaterias() {
             });
         });
 
-        // Eventos de edição nas faltas
         card.querySelectorAll('.input-falta').forEach(input => {
             input.addEventListener('click', e => e.stopPropagation());
 
@@ -424,9 +420,12 @@ function renderizarTabelaGeral() {
 function renderizarGraficos() {
     if (typeof Chart === 'undefined') return;
 
-    const isDark = document.body.classList.contains('dark-mode');
-    const corTexto = isDark ? '#cbd5e1' : '#475569';
-    const corGrade = isDark ? '#334155' : '#e2e8f0';
+    const isLight = document.body.classList.contains('light-mode');
+    const corTexto = isLight ? '#334155' : '#b8c0d9';
+    const corGrade = isLight ? '#e2e8f0' : '#1f2438';
+    const corVerde = isLight ? '#059669' : '#00ff87';
+    const corVermelho = isLight ? '#e11d48' : '#ff2a6d';
+    const corCiano = isLight ? '#0284c7' : '#00f3ff';
 
     const comNota = materias.map(m => ({ nome: m.disciplina, info: calcularInfoMateria(m) }))
                             .filter(x => x.info.media !== null);
@@ -439,7 +438,7 @@ function renderizarGraficos() {
             datasets: [{
                 label: 'Média',
                 data: comNota.map(x => Number(x.info.media.toFixed(1))),
-                backgroundColor: comNota.map(x => x.info.media >= 6 ? '#10b981' : '#ef4444'),
+                backgroundColor: comNota.map(x => x.info.media >= 6 ? corVerde : corVermelho),
                 borderRadius: 6
             }]
         },
@@ -465,7 +464,7 @@ function renderizarGraficos() {
             labels: ['Na Média (≥ 6,0)', 'Atenção (< 6,0)', 'Sem Notas'],
             datasets: [{
                 data: [bom, atencao, pendente],
-                backgroundColor: ['#10b981', '#ef4444', '#94a3b8'],
+                backgroundColor: [corVerde, corVermelho, '#64748b'],
                 borderWidth: 0
             }]
         },
@@ -484,7 +483,7 @@ function renderizarGraficos() {
             datasets: [{
                 label: 'Faltas',
                 data: materias.map(m => calcularInfoMateria(m).totalFaltas),
-                backgroundColor: '#2563eb',
+                backgroundColor: corCiano,
                 borderRadius: 5
             }]
         },
@@ -502,22 +501,22 @@ function renderizarGraficos() {
 
 // --- CONTROLES E EVENTOS ---
 function configurarEventos() {
-    // Alternar Tema
+    // Alternar Tema (Padrão: Preto e Neon / Opcional: Claro)
     const btnTema = document.getElementById('btn-tema');
-    if (localStorage.getItem('boletim_tema_dark') === 'true') {
-        document.body.classList.add('dark-mode');
-        btnTema.innerText = '☀️';
+    if (localStorage.getItem('boletim_tema_light') === 'true') {
+        document.body.classList.add('light-mode');
+        btnTema.innerText = '🌙';
     }
 
     btnTema.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const dark = document.body.classList.contains('dark-mode');
-        btnTema.innerText = dark ? '☀️' : '🌙';
-        localStorage.setItem('boletim_tema_dark', dark);
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        btnTema.innerText = isLight ? '🌙' : '☀️';
+        localStorage.setItem('boletim_tema_light', isLight);
         renderizarGraficos();
     });
 
-    // Alternar Modo Edição (Bloquear / Desbloquear campos)
+    // Alternar Modo Edição
     const btnEdicao = document.getElementById('btn-modo-edicao');
     const bannerEdicao = document.getElementById('banner-edicao');
     btnEdicao.addEventListener('click', () => {

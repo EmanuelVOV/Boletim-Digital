@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boletim Digital Escolar - 8º Ano</title>
+    <title>Boletim Digital Neon - 8º Ano</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -12,7 +12,7 @@
     <!-- Tela de Autenticação -->
     <div id="tela-login" class="tela-login">
         <div class="login-card">
-            <div class="login-logo">🎓</div>
+            <div class="login-logo">⚡</div>
             <span class="login-tag">PORTAL DO ESTUDANTE</span>
             <h2>Boletim Digital</h2>
             <p>Digite a senha para acessar e editar suas notas e frequência.</p>
@@ -30,11 +30,11 @@
     <!-- Sistema Principal -->
     <div id="conteudo-boletim" class="escondido">
         
-        <!-- Barra Superior Institucional -->
+        <!-- Barra Superior -->
         <header class="topbar">
             <div class="topbar-container">
                 <div class="perfil-aluno">
-                    <div class="avatar-aluno">📘</div>
+                    <div class="avatar-aluno">⚡</div>
                     <div>
                         <div class="badges-topo">
                             <span class="badge-serie">8º ANO • ENSINO FUNDAMENTAL</span>
@@ -52,7 +52,7 @@
                         ☁️ Puxar do Drive
                     </button>
                     <button id="btn-tema" class="btn-topo btn-icone-apenas" title="Alternar tema claro/escuro">
-                        🌙
+                        ☀️
                     </button>
                     <button id="btn-sair" class="btn-topo btn-icone-apenas" title="Bloquear tela">
                         🔒
@@ -71,7 +71,7 @@
 
             <!-- Cards de Resumo (KPIs) -->
             <section class="kpis-grid">
-                <div class="kpi-card kpi-azul">
+                <div class="kpi-card kpi-ciano">
                     <div class="kpi-topo">
                         <span>Média Geral</span>
                         <span>📈</span>
@@ -89,7 +89,7 @@
                     <small>Disciplinas com bom desempenho</small>
                 </div>
 
-                <div class="kpi-card kpi-vermelho">
+                <div class="kpi-card kpi-rosa">
                     <div class="kpi-topo">
                         <span>Em Atenção (&lt; 6,0)</span>
                         <span>⚠️</span>
@@ -107,7 +107,7 @@
                     <small id="kpi-frequencia-desc">Frequência regular</small>
                 </div>
 
-                <div class="kpi-card kpi-laranja">
+                <div class="kpi-card kpi-amarelo">
                     <div class="kpi-topo">
                         <span>Total de Faltas</span>
                         <span>🕒</span>
@@ -124,7 +124,7 @@
                 <button class="aba-btn" data-aba="aba-tabela">📑 Visão Geral em Tabela</button>
             </nav>
 
-            <!-- ABA 1: CARDS DE MATÉRIAS (ESTILO ESCOLA PARANÁ + EDIÇÃO) -->
+            <!-- ABA 1: CARDS DE MATÉRIAS -->
             <section id="aba-materias" class="aba-painel ativa">
                 <div class="barra-ferramentas">
                     <input type="text" id="input-busca" placeholder="🔍 Filtrar por nome da disciplina...">
