@@ -3,153 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boletim Digital - 8º Ano</title>
+    <title>Boletim Digital Escolar - 8º Ano</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <!-- Tela de Acesso Protegida por Senha -->
+    <!-- Tela de Autenticação -->
     <div id="tela-login" class="tela-login">
         <div class="login-card">
-            <div class="login-badge">BOLETIM DIGITAL</div>
-            <h2>Acesso Restrito</h2>
-            <p>Insira a senha para consultar notas, frequência e gráficos.</p>
+            <div class="login-logo">🎓</div>
+            <span class="login-tag">PORTAL DO ESTUDANTE</span>
+            <h2>Boletim Digital</h2>
+            <p>Digite a senha para acessar e editar suas notas e frequência.</p>
             
-            <div class="campo-senha-grupo">
-                <input type="password" id="campo-senha" placeholder="Digite a senha..." autofocus>
-                <button type="button" id="btn-ver-senha" title="Mostrar ou ocultar senha">👁️</button>
+            <div class="input-senha-box">
+                <input type="password" id="campo-senha" placeholder="Digite sua senha..." autofocus>
+                <button type="button" id="btn-ver-senha" title="Mostrar/Ocultar senha">👁️</button>
             </div>
 
-            <button id="btn-entrar" class="btn-primario">Entrar no Boletim</button>
+            <button id="btn-entrar" class="btn-entrar">Acessar Boletim</button>
             <p id="msg-erro" class="msg-erro"></p>
         </div>
     </div>
 
-    <!-- Painel Principal do Boletim -->
+    <!-- Sistema Principal -->
     <div id="conteudo-boletim" class="escondido">
-        <div class="container">
-            
-            <!-- Cabeçalho Institucional / Perfil -->
-            <header class="cabecalho">
-                <div class="cabecalho-info">
-                    <span class="tag-ano">8º ANO • ENSINO FUNDAMENTAL</span>
-                    <h1 id="nome-estudante">Boletim Escolar Digital</h1>
-                    <p id="status-conexao" class="status-conexao">Sincronizado com Google Drive</p>
+        
+        <!-- Barra Superior Institucional -->
+        <header class="topbar">
+            <div class="topbar-container">
+                <div class="perfil-aluno">
+                    <div class="avatar-aluno">📘</div>
+                    <div>
+                        <div class="badges-topo">
+                            <span class="badge-serie">8º ANO • ENSINO FUNDAMENTAL</span>
+                            <span id="status-sync" class="badge-sync">● Sincronizado</span>
+                        </div>
+                        <h1>Boletim Escolar Digital</h1>
+                    </div>
                 </div>
 
-                <div class="cabecalho-acoes">
-                    <button id="btn-sincronizar" class="btn-acao" title="Atualizar dados da planilha">🔄 Atualizar</button>
-                    <button id="btn-tema" class="btn-acao" title="Alternar modo claro/escuro">🌙</button>
-                    <button id="btn-sair" class="btn-acao btn-sair" title="Bloquear boletim">🔒 Sair</button>
+                <div class="acoes-topbar">
+                    <button id="btn-modo-edicao" class="btn-topo btn-editar-ativo" title="Ativar ou desativar edição de notas">
+                        ✏️ Editando Notas
+                    </button>
+                    <button id="btn-puxar-drive" class="btn-topo" title="Substituir pelos dados atuais da planilha do Google Drive">
+                        ☁️ Puxar do Drive
+                    </button>
+                    <button id="btn-tema" class="btn-topo btn-icone-apenas" title="Alternar tema claro/escuro">
+                        🌙
+                    </button>
+                    <button id="btn-sair" class="btn-topo btn-icone-apenas" title="Bloquear tela">
+                        🔒
+                    </button>
                 </div>
-            </header>
+            </div>
+        </header>
+
+        <main class="container">
+            
+            <!-- Aviso de Edição -->
+            <div id="banner-edicao" class="banner-edicao">
+                <span>💡 <strong>Modo de Edição Ativo:</strong> Clique em qualquer matéria para digitar ou alterar as notas (0 a 10) e faltas. As médias, gráficos e resumos atualizam na hora!</span>
+                <span id="indicador-salvo" class="indicador-salvo">✓ Salvo no navegador</span>
+            </div>
 
             <!-- Cards de Resumo (KPIs) -->
-            <section class="cards-resumo">
-                <div class="card-kpi">
-                    <span class="kpi-titulo">Média Geral</span>
-                    <strong id="card-media" class="kpi-valor">—</strong>
-                    <span class="kpi-sub">Escala 0 a 10</span>
+            <section class="kpis-grid">
+                <div class="kpi-card kpi-azul">
+                    <div class="kpi-topo">
+                        <span>Média Geral</span>
+                        <span>📈</span>
+                    </div>
+                    <strong id="kpi-media" class="kpi-numero">—</strong>
+                    <small>Média global das disciplinas</small>
                 </div>
 
-                <div class="card-kpi">
-                    <span class="kpi-titulo">Frequência Geral</span>
-                    <strong id="card-frequencia" class="kpi-valor">92%</strong>
-                    <span id="card-frequencia-texto" class="kpi-sub">Frequência adequada</span>
+                <div class="kpi-card kpi-verde">
+                    <div class="kpi-topo">
+                        <span>Na Média (≥ 6,0)</span>
+                        <span>✅</span>
+                    </div>
+                    <strong id="kpi-bom" class="kpi-numero">—</strong>
+                    <small>Disciplinas com bom desempenho</small>
                 </div>
 
-                <div class="card-kpi">
-                    <span class="kpi-titulo">Bom Desempenho</span>
-                    <strong id="card-bom-desempenho" class="kpi-valor texto-verde">—</strong>
-                    <span class="kpi-sub">Média ≥ 6,0</span>
+                <div class="kpi-card kpi-vermelho">
+                    <div class="kpi-topo">
+                        <span>Em Atenção (&lt; 6,0)</span>
+                        <span>⚠️</span>
+                    </div>
+                    <strong id="kpi-atencao" class="kpi-numero">—</strong>
+                    <small>Disciplinas abaixo da média</small>
                 </div>
 
-                <div class="card-kpi">
-                    <span class="kpi-titulo">Atenção</span>
-                    <strong id="card-atencao" class="kpi-valor texto-vermelho">—</strong>
-                    <span class="kpi-sub">Média &lt; 6,0</span>
+                <div class="kpi-card kpi-roxo">
+                    <div class="kpi-topo">
+                        <span>Frequência Estimada</span>
+                        <span>📅</span>
+                    </div>
+                    <strong id="kpi-frequencia" class="kpi-numero">100%</strong>
+                    <small id="kpi-frequencia-desc">Frequência regular</small>
                 </div>
 
-                <div class="card-kpi">
-                    <span class="kpi-titulo">Total de Faltas</span>
-                    <strong id="card-faltas" class="kpi-valor">—</strong>
-                    <span class="kpi-sub">Acumulado no ano</span>
+                <div class="kpi-card kpi-laranja">
+                    <div class="kpi-topo">
+                        <span>Total de Faltas</span>
+                        <span>🕒</span>
+                    </div>
+                    <strong id="kpi-faltas" class="kpi-numero">0</strong>
+                    <small>Faltas acumuladas no ano</small>
                 </div>
             </section>
 
-            <!-- Navegação por Abas Internas -->
-            <nav class="abas-navegacao">
-                <button class="aba-btn ativa" data-aba="aba-boletim">📋 Disciplinas e Notas</button>
-                <button class="aba-btn" data-aba="aba-graficos">📊 Gráficos de Desempenho</button>
-                <button class="aba-btn" data-aba="aba-faltas">📅 Quadro de Faltas</button>
+            <!-- Abas de Navegação -->
+            <nav class="nav-abas">
+                <button class="aba-btn ativa" data-aba="aba-materias">📋 Boletim por Matéria</button>
+                <button class="aba-btn" data-aba="aba-graficos">📊 Gráficos Visuais</button>
+                <button class="aba-btn" data-aba="aba-tabela">📑 Visão Geral em Tabela</button>
             </nav>
 
-            <!-- ABA 1: DISCIPLINAS E NOTAS (Estilo Escola Paraná) -->
-            <section id="aba-boletim" class="aba-conteudo ativa">
-                <div class="controles-lista">
-                    <input type="text" id="input-busca" placeholder="🔍 Buscar disciplina...">
+            <!-- ABA 1: CARDS DE MATÉRIAS (ESTILO ESCOLA PARANÁ + EDIÇÃO) -->
+            <section id="aba-materias" class="aba-painel ativa">
+                <div class="barra-ferramentas">
+                    <input type="text" id="input-busca" placeholder="🔍 Filtrar por nome da disciplina...">
                     
-                    <div class="filtros-grupo">
+                    <div class="filtros-lista">
                         <button class="filtro-btn ativo" data-filtro="todas">Todas</button>
-                        <button class="filtro-btn" data-filtro="bom">Bom Desempenho</button>
+                        <button class="filtro-btn" data-filtro="bom">Na Média</button>
                         <button class="filtro-btn" data-filtro="atencao">Atenção</button>
-                        <button id="btn-expandir-todas" class="btn-secundario">Expandir Todas</button>
+                        <button id="btn-expandir-tudo" class="btn-expandir">Recolher Todas</button>
                     </div>
                 </div>
 
-                <div id="materias-container" class="materias-container"></div>
+                <div id="lista-materias" class="lista-materias"></div>
             </section>
 
-            <!-- ABA 2: GRÁFICOS DE DESEMPENHO -->
-            <section id="aba-graficos" class="aba-conteudo">
-                <div class="graficos-grid">
-                    <div class="card-grafico grafico-largo">
-                        <h3>Média Atual por Disciplina</h3>
-                        <p class="grafico-desc">Linha de referência mínima: 6,0</p>
-                        <div class="canvas-wrapper">
-                            <canvas id="graficoMedias"></canvas>
+            <!-- ABA 2: GRÁFICOS -->
+            <section id="aba-graficos" class="aba-painel">
+                <div class="graficos-layout">
+                    <div class="grafico-card grafico-full">
+                        <div class="grafico-cabecalho">
+                            <h3>Desempenho por Disciplina (Média Atual)</h3>
+                            <span>Meta mínima: 6,0</span>
+                        </div>
+                        <div class="canvas-box-grande">
+                            <canvas id="chartMedias"></canvas>
                         </div>
                     </div>
 
-                    <div class="card-grafico">
-                        <h3>Situação Geral das Matérias</h3>
-                        <p class="grafico-desc">Distribuição por rendimento</p>
-                        <div class="canvas-wrapper-pequeno">
-                            <canvas id="graficoSituacao"></canvas>
+                    <div class="grafico-card">
+                        <div class="grafico-cabecalho">
+                            <h3>Distribuição de Rendimento</h3>
+                            <span>Proporção por status</span>
+                        </div>
+                        <div class="canvas-box-medio">
+                            <canvas id="chartStatus"></canvas>
                         </div>
                     </div>
 
-                    <div class="card-grafico">
-                        <h3>Faltas por Disciplina</h3>
-                        <p class="grafico-desc">Total acumulado nos trimestres</p>
-                        <div class="canvas-wrapper-pequeno">
-                            <canvas id="graficoFaltas"></canvas>
+                    <div class="grafico-card">
+                        <div class="grafico-cabecalho">
+                            <h3>Faltas Acumuladas</h3>
+                            <span>Total por matéria</span>
+                        </div>
+                        <div class="canvas-box-medio">
+                            <canvas id="chartFaltas"></canvas>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ABA 3: QUADRO DETALHADO DE FALTAS -->
-            <section id="aba-faltas" class="aba-conteudo">
-                <div class="tabela-container">
-                    <table class="tabela-faltas">
+            <!-- ABA 3: TABELA COMPLETA -->
+            <section id="aba-tabela" class="aba-painel">
+                <div class="tabela-wrapper">
+                    <table class="tabela-geral">
                         <thead>
                             <tr>
                                 <th>Disciplina</th>
                                 <th>1º Tri</th>
                                 <th>2º Tri</th>
                                 <th>3º Tri</th>
-                                <th>Total</th>
-                                <th>Status</th>
+                                <th>Média</th>
+                                <th>Faltas</th>
+                                <th>Situação</th>
                             </tr>
                         </thead>
-                        <tbody id="tabela-faltas-corpo"></tbody>
+                        <tbody id="corpo-tabela-geral"></tbody>
                     </table>
                 </div>
             </section>
 
-        </div>
+        </main>
     </div>
 
     <script src="script.js"></script>

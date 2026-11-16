@@ -2,330 +2,444 @@ const SENHA_CORRETA = "Mell07312002";
 const SPREADSHEET_ID = "1yhQkt8Q6tlIvcg5Fon3mdXZ3cMR-mnTXi7A7gDxXxPc";
 const URL_NOTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Notas`;
 const URL_FALTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Faltas`;
+const STORAGE_KEY = "boletim_8ano_dados_v1";
 
-let dadosProcessados = [];
+let materias = [];
+let modoEdicao = true;
 let filtroAtual = "todas";
-let todasExpandidas = false;
+let expandirTodas = true;
 let chartMedias = null;
-let chartSituacao = null;
+let chartStatus = null;
 let chartFaltas = null;
 
-// Plano B: Dados locais caso haja oscilação na rede
-const dadosBoletimReserva = [
-    { disciplina: "Língua Portuguesa", tri1: 82, tri2: "7,8", tri3: 85, faltas: [2, 1, 1] },
-    { disciplina: "Matemática", tri1: 52, tri2: "5,8", tri3: null, faltas: [3, 2, 1] },
-    { disciplina: "Ciências", tri1: "8,1", tri2: 76, tri3: 8.0, faltas: [1, 2, 0] },
-    { disciplina: "História", tri1: 7.0, tri2: 84, tri3: null, faltas: [1, 1, 1] },
-    { disciplina: "Geografia", tri1: 68, tri2: 7.3, tri3: "7,9", faltas: [0, 1, 1] },
-    { disciplina: "Língua Inglesa", tri1: 86, tri2: "8,1", tri3: 8.7, faltas: [1, 0, 0] },
-    { disciplina: "Arte", tri1: 9.0, tri2: 92, tri3: null, faltas: [1, 1, 0] },
-    { disciplina: "Educação Física", tri1: 95, tri2: 9.0, tri3: "9,4", faltas: [0, 1, 0] },
-    { disciplina: "Educação Digital", tri1: 88, tri2: 9.1, tri3: 93, faltas: [1, 0, 1] },
-    { disciplina: "Educação Financeira", tri1: 74, tri2: "7,8", tri3: null, faltas: [1, 1, 1] },
-    { disciplina: "Estudo Orientado", tri1: 8.0, tri2: 83, tri3: "8,5", faltas: [0, 1, 0] },
-    { disciplina: "Redação e Leitura", tri1: 62, tri2: "6,8", tri3: null, faltas: [2, 1, 1] },
-    { disciplina: "Pensamento Lógico", tri1: 48, tri2: 5.6, tri3: "6,0", faltas: [2, 2, 1] },
-    { disciplina: "Literatura Arte e Movimento", tri1: "7,7", tri2: 80, tri3: null, faltas: [1, 0, 1] },
-    { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] }
+// Dados iniciais de backup caso o Drive esteja indisponível no primeiro acesso
+const dadosBackup = [
+    { id: 0, disciplina: "Língua Portuguesa", tri1: 8.2, tri2: 7.8, tri3: 8.5, f1: 2, f2: 1, f3: 1 },
+    { id: 1, disciplina: "Matemática", tri1: 5.2, tri2: 5.8, tri3: null, f1: 3, f2: 2, f3: 1 },
+    { id: 2, disciplina: "Ciências", tri1: 8.1, tri2: 7.6, tri3: 8.0, f1: 1, f2: 2, f3: 0 },
+    { id: 3, disciplina: "História", tri1: 7.0, tri2: 8.4, tri3: null, f1: 1, f2: 1, f3: 1 },
+    { id: 4, disciplina: "Geografia", tri1: 6.8, tri2: 7.3, tri3: 7.9, f1: 0, f2: 1, f3: 1 },
+    { id: 5, disciplina: "Língua Inglesa", tri1: 8.6, tri2: 8.1, tri3: 8.7, f1: 1, f2: 0, f3: 0 },
+    { id: 6, disciplina: "Arte", tri1: 9.0, tri2: 9.2, tri3: null, f1: 1, f2: 1, f3: 0 },
+    { id: 7, disciplina: "Educação Física", tri1: 9.5, tri2: 9.0, tri3: 9.4, f1: 0, f2: 1, f3: 0 },
+    { id: 8, disciplina: "Educação Digital", tri1: 8.8, tri2: 9.1, tri3: 9.3, f1: 1, f2: 0, f3: 1 },
+    { id: 9, disciplina: "Educação Financeira", tri1: 7.4, tri2: 7.8, tri3: null, f1: 1, f2: 1, f3: 1 },
+    { id: 10, disciplina: "Estudo Orientado", tri1: 8.0, tri2: 8.3, tri3: 8.5, f1: 0, f2: 1, f3: 0 },
+    { id: 11, disciplina: "Redação e Leitura", tri1: 6.2, tri2: 6.8, tri3: null, f1: 2, f2: 1, f3: 1 },
+    { id: 12, disciplina: "Pensamento Lógico", tri1: 4.8, tri2: 5.6, tri3: 6.0, f1: 2, f2: 2, f3: 1 },
+    { id: 13, disciplina: "Literatura Arte e Movimento", tri1: 7.7, tri2: 8.0, tri3: null, f1: 1, f2: 0, f3: 1 },
+    { id: 14, disciplina: "Práticas Experimentais", tri1: 5.8, tri2: 6.2, tri3: 6.4, f1: 1, f2: 1, f3: 1 }
 ];
 
-// --- AUTENTICAÇÃO ---
-function inicializarSeguranca() {
+// --- LOGIN / SENHA ---
+function configurarLogin() {
     const telaLogin = document.getElementById('tela-login');
-    const conteudoBoletim = document.getElementById('conteudo-boletim');
+    const conteudo = document.getElementById('conteudo-boletim');
     const campoSenha = document.getElementById('campo-senha');
     const btnEntrar = document.getElementById('btn-entrar');
-    const btnVerSenha = document.getElementById('btn-ver-senha');
+    const btnVer = document.getElementById('btn-ver-senha');
     const btnSair = document.getElementById('btn-sair');
     const msgErro = document.getElementById('msg-erro');
 
-    // Mantém desbloqueado na mesma sessão do navegador
-    if (sessionStorage.getItem('boletim_autenticado') === 'true') {
+    if (sessionStorage.getItem('boletim_logado') === 'true') {
         telaLogin.classList.add('escondido');
-        conteudoBoletim.classList.remove('escondido');
-        iniciarSistema();
+        conteudo.classList.remove('escondido');
+        iniciarApp();
         return;
     }
 
-    btnVerSenha.addEventListener('click', () => {
+    btnVer.addEventListener('click', () => {
         campoSenha.type = campoSenha.type === 'password' ? 'text' : 'password';
     });
 
-    function tentarLogin() {
+    function validar() {
         if (campoSenha.value === SENHA_CORRETA) {
-            sessionStorage.setItem('boletim_autenticado', 'true');
+            sessionStorage.setItem('boletim_logado', 'true');
             telaLogin.classList.add('escondido');
-            conteudoBoletim.classList.remove('escondido');
-            iniciarSistema();
+            conteudo.classList.remove('escondido');
+            iniciarApp();
         } else {
-            msgErro.innerText = "Senha incorreta. Tente novamente.";
+            msgErro.innerText = "Senha incorreta! Verifique e tente novamente.";
             campoSenha.value = "";
             campoSenha.focus();
         }
     }
 
-    btnEntrar.addEventListener('click', tentarLogin);
+    btnEntrar.addEventListener('click', validar);
     campoSenha.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') tentarLogin();
+        if (e.key === 'Enter') validar();
     });
 
     btnSair.addEventListener('click', () => {
-        sessionStorage.removeItem('boletim_autenticado');
+        sessionStorage.removeItem('boletim_logado');
         location.reload();
     });
 }
 
-// --- TEMA CLARO / ESCURO ---
-function inicializarTema() {
-    const btnTema = document.getElementById('btn-tema');
-    const temaSalvo = localStorage.getItem('boletim_tema');
-
-    if (temaSalvo === 'light') {
-        document.body.classList.add('light-mode');
-        btnTema.innerText = '☀️';
-    }
-
-    btnTema.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        const isLight = document.body.classList.contains('light-mode');
-        btnTema.innerText = isLight ? '☀️' : '🌙';
-        localStorage.setItem('boletim_tema', isLight ? 'light' : 'dark');
-        renderizarGraficos();
-    });
-}
-
-// --- ABAS DE NAVEGAÇÃO ---
-function inicializarAbas() {
-    const botoesAba = document.querySelectorAll('.aba-btn');
-    const conteudosAba = document.querySelectorAll('.aba-conteudo');
-
-    botoesAba.forEach(btn => {
-        btn.addEventListener('click', () => {
-            botoesAba.forEach(b => b.classList.remove('ativa'));
-            conteudosAba.forEach(c => c.classList.remove('ativa'));
-
-            btn.classList.add('ativa');
-            const alvo = document.getElementById(btn.dataset.aba);
-            if (alvo) alvo.classList.add('ativa');
-
-            if (btn.dataset.aba === 'aba-graficos') {
-                renderizarGraficos();
-            }
-        });
-    });
-}
-
-// --- TRATAMENTO DE DADOS ---
+// --- NORMALIZAÇÃO E CÁLCULOS ---
 function normalizarNota(valor) {
     if (valor === null || valor === undefined || valor === "" || valor === "—") return null;
-    if (typeof valor === 'string') valor = valor.replace(/"/g, '').replace(',', '.').trim();
+    if (typeof valor === 'string') {
+        valor = valor.replace(/"/g, '').replace(',', '.').trim();
+        if (valor === "") return null;
+    }
 
-    let numero = Number(valor);
-    if (isNaN(numero)) return null;
-    if (numero > 10 && numero <= 100) numero = numero / 10;
-    if (numero < 0 || numero > 10) return null;
+    let num = Number(valor);
+    if (isNaN(num)) return null;
+    if (num > 10 && num <= 100) num = num / 10;
+    if (num < 0) num = 0;
+    if (num > 10) num = 10;
 
-    return numero;
-}
-
-function parseCSV(textoCSV) {
-    return textoCSV.split('\n').map(linha =>
-        linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim())
-    );
+    return Math.round(num * 10) / 10;
 }
 
 function formatarNota(nota) {
     return nota === null ? "—" : nota.toFixed(1).replace('.', ',');
 }
 
-function processarListaBruta(listaBruta) {
-    return listaBruta.map(item => {
-        const n1 = normalizarNota(item.tri1);
-        const n2 = normalizarNota(item.tri2);
-        const n3 = normalizarNota(item.tri3);
-
-        const f1 = Number(item.faltas?.[0]) || 0;
-        const f2 = Number(item.faltas?.[1]) || 0;
-        const f3 = Number(item.faltas?.[2]) || 0;
-        const totalFaltas = f1 + f2 + f3;
-
-        const validas = [n1, n2, n3].filter(n => n !== null);
-        let media = null;
-        let status = "pendente";
-        let statusTexto = "Nota não lançada";
-        let statusClasse = "situacao-indisponivel";
-
-        if (validas.length > 0) {
-            media = validas.reduce((acc, val) => acc + val, 0) / validas.length;
-            if (media >= 6.0) {
-                status = "bom";
-                statusTexto = "Bom desempenho";
-                statusClasse = "situacao-bom";
-            } else {
-                status = "atencao";
-                statusTexto = "Atenção";
-                statusClasse = "situacao-atencao";
-            }
-        }
-
-        return {
-            disciplina: item.disciplina,
-            n1, n2, n3,
-            media,
-            f1, f2, f3,
-            totalFaltas,
-            status,
-            statusTexto,
-            statusClasse
-        };
-    });
+function formatarInputNota(nota) {
+    return nota === null ? "" : nota.toFixed(1).replace('.', ',');
 }
 
-// --- RENDERIZAÇÃO DA INTERFACE ---
+function calcularInfoMateria(m) {
+    const validas = [m.tri1, m.tri2, m.tri3].filter(n => n !== null && !isNaN(n));
+    const totalFaltas = (Number(m.f1) || 0) + (Number(m.f2) || 0) + (Number(m.f3) || 0);
+
+    let media = null;
+    let status = "pendente";
+    let statusLabel = "Sem notas";
+    let statusClass = "status-pendente";
+
+    if (validas.length > 0) {
+        media = validas.reduce((a, b) => a + b, 0) / validas.length;
+        if (media >= 6.0) {
+            status = "bom";
+            statusLabel = "Bom Desempenho";
+            statusClass = "status-bom";
+        } else {
+            status = "atencao";
+            statusLabel = "Atenção";
+            statusClass = "status-atencao";
+        }
+    }
+
+    return { media, totalFaltas, status, statusLabel, statusClass };
+}
+
+// --- PERSISTÊNCIA E GOOGLE DRIVE ---
+function salvarLocalmente() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(materias));
+    const indicador = document.getElementById('indicador-salvo');
+    indicador.innerText = "✓ Alterações salvas";
+    document.getElementById('status-sync').innerText = "● Editado localmente";
+}
+
+function parseCSV(texto) {
+    return texto.split('\n').map(linha =>
+        linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim())
+    );
+}
+
+async function sincronizarComDrive(forcarDrive = false) {
+    const statusEl = document.getElementById('status-sync');
+
+    if (!forcarDrive) {
+        const salvo = localStorage.getItem(STORAGE_KEY);
+        if (salvo) {
+            try {
+                materias = JSON.parse(salvo);
+                statusEl.innerText = "● Dados locais carregados";
+                atualizarTudo();
+                return;
+            } catch (e) {
+                console.warn("Erro ao ler dados salvos:", e);
+            }
+        }
+    }
+
+    statusEl.innerText = "⏳ Buscando do Google Drive...";
+
+    try {
+        const nocache = `&t=${Date.now()}`;
+        const [resNotas, resFaltas] = await Promise.all([
+            fetch(URL_NOTAS + nocache),
+            fetch(URL_FALTAS + nocache)
+        ]);
+
+        if (!resNotas.ok || !resFaltas.ok) throw new Error("Falha ao acessar planilha");
+
+        const matrizNotas = parseCSV(await resNotas.text());
+        const matrizFaltas = parseCSV(await resFaltas.text());
+
+        const novaLista = [];
+        for (let i = 1; i < matrizNotas.length; i++) {
+            const row = matrizNotas[i];
+            if (!row || !row[0]) continue;
+
+            const nome = row[0];
+            const rowFalta = matrizFaltas.find(f => f[0]?.toLowerCase() === nome.toLowerCase()) || matrizFaltas[i] || [];
+
+            novaLista.push({
+                id: i - 1,
+                disciplina: nome,
+                tri1: normalizarNota(row[1]),
+                tri2: normalizarNota(row[2]),
+                tri3: normalizarNota(row[3]),
+                f1: Number(rowFalta[1]) || 0,
+                f2: Number(rowFalta[2]) || 0,
+                f3: Number(rowFalta[3]) || 0
+            });
+        }
+
+        if (novaLista.length > 0) {
+            materias = novaLista;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(materias));
+            statusEl.innerText = "● Sincronizado com Google Drive";
+        } else {
+            throw new Error("Planilha vazia");
+        }
+    } catch (erro) {
+        console.warn("Usando backup local:", erro);
+        if (materias.length === 0) {
+            materias = JSON.parse(JSON.stringify(dadosBackup));
+        }
+        statusEl.innerText = "● Modo Offline (Backup)";
+    }
+
+    atualizarTudo();
+}
+
+// --- ATUALIZAÇÃO DA INTERFACE ---
+function atualizarTudo() {
+    atualizarKPIs();
+    renderizarListaMaterias();
+    renderizarTabelaGeral();
+    renderizarGraficos();
+}
+
 function atualizarKPIs() {
     let somaMedias = 0;
-    let qtdComMedia = 0;
-    let totalFaltas = 0;
-    let bomCount = 0;
-    let atencaoCount = 0;
+    let qtdMedias = 0;
+    let qtdBom = 0;
+    let qtdAtencao = 0;
+    let somaFaltas = 0;
 
-    dadosProcessados.forEach(d => {
-        totalFaltas += d.totalFaltas;
-        if (d.media !== null) {
-            somaMedias += d.media;
-            qtdComMedia++;
-            if (d.status === "bom") bomCount++;
-            if (d.status === "atencao") atencaoCount++;
+    materias.forEach(m => {
+        const info = calcularInfoMateria(m);
+        somaFaltas += info.totalFaltas;
+        if (info.media !== null) {
+            somaMedias += info.media;
+            qtdMedias++;
+            if (info.status === "bom") qtdBom++;
+            if (info.status === "atencao") qtdAtencao++;
         }
     });
 
-    const mediaGeral = qtdComMedia > 0 ? (somaMedias / qtdComMedia).toFixed(1).replace('.', ',') : "—";
+    const mediaGeral = qtdMedias > 0 ? (somaMedias / qtdMedias).toFixed(1).replace('.', ',') : "—";
 
-    document.getElementById('card-media').innerText = mediaGeral;
-    document.getElementById('card-faltas').innerText = totalFaltas;
-    document.getElementById('card-bom-desempenho').innerText = bomCount;
-    document.getElementById('card-atencao').innerText = atencaoCount;
-    document.getElementById('card-frequencia').innerText = "92%";
-    document.getElementById('card-frequencia-texto').innerText = "Frequência adequada";
+    // Cálculo dinâmico de frequência baseado em carga horária anual estimada (800 aulas)
+    const aulasTotais = 800;
+    const freqNum = Math.max(0, Math.min(100, ((aulasTotais - somaFaltas) / aulasTotais) * 100));
+    const freqStr = freqNum.toFixed(1).replace('.', ',') + "%";
+
+    document.getElementById('kpi-media').innerText = mediaGeral;
+    document.getElementById('kpi-bom').innerText = qtdBom;
+    document.getElementById('kpi-atencao').innerText = qtdAtencao;
+    document.getElementById('kpi-faltas').innerText = somaFaltas;
+    document.getElementById('kpi-frequencia').innerText = freqStr;
+    document.getElementById('kpi-frequencia-desc').innerText = freqNum >= 75 ? "Frequência regular (≥ 75%)" : "Alerta de baixa frequência";
 }
 
 function renderizarListaMaterias() {
-    const container = document.getElementById('materias-container');
-    const termoBusca = document.getElementById('input-busca').value.toLowerCase().trim();
+    const container = document.getElementById('lista-materias');
+    const busca = document.getElementById('input-busca').value.toLowerCase().trim();
     container.innerHTML = '';
 
-    const filtradas = dadosProcessados.filter(d => {
-        const bateTexto = d.disciplina.toLowerCase().includes(termoBusca);
-        const bateFiltro = filtroAtual === "todas" || d.status === filtroAtual;
-        return bateTexto && bateFiltro;
+    const filtradas = materias.filter(m => {
+        const info = calcularInfoMateria(m);
+        const matchTexto = m.disciplina.toLowerCase().includes(busca);
+        const matchFiltro = filtroAtual === "todas" || info.status === filtroAtual;
+        return matchTexto && matchFiltro;
     });
 
     if (filtradas.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 20px;">Nenhuma disciplina encontrada para este filtro.</p>`;
+        container.innerHTML = `<p style="text-align:center; padding: 24px; color: var(--text-muted);">Nenhuma disciplina encontrada.</p>`;
         return;
     }
 
-    filtradas.forEach(d => {
-        const mediaStr = formatarNota(d.media);
-        const porcentagemBarra = d.media !== null ? Math.min(100, Math.max(0, d.media * 10)) : 0;
-        const classeAlerta = d.media !== null && d.media < 6.0 ? 'alerta' : '';
+    filtradas.forEach(m => {
+        const info = calcularInfoMateria(m);
+        const mediaStr = formatarNota(info.media);
+        const larguraBarra = info.media !== null ? Math.min(100, info.media * 10) : 0;
+        const disabledAttr = modoEdicao ? "" : "disabled";
 
         const card = document.createElement('article');
-        card.className = `materia-card ${todasExpandidas ? 'aberto' : ''}`;
+        card.className = `materia-card ${expandirTodas ? 'aberto' : ''}`;
         card.innerHTML = `
             <div class="materia-header">
-                <div class="materia-info-esq">
-                    <h3 class="materia-titulo">${d.disciplina}</h3>
-                    <span class="situacao-badge ${d.statusClasse}">${d.statusTexto}</span>
+                <div class="materia-esq">
+                    <span class="materia-nome">${m.disciplina}</span>
+                    <span class="badge-status ${info.statusClass}" id="badge-${m.id}">${info.statusLabel}</span>
                 </div>
-                <div class="materia-info-dir">
-                    <span class="resumo-rapido">Média: ${mediaStr} • Faltas: ${d.totalFaltas}</span>
-                    <span class="seta-icon">▼</span>
+                <div class="materia-dir">
+                    <span class="pilula-info pilula-media" id="pilula-media-${m.id}">Média: ${mediaStr}</span>
+                    <span class="pilula-info" id="pilula-faltas-${m.id}">Faltas: ${info.totalFaltas}</span>
+                    <span class="seta-accordion">▼</span>
                 </div>
             </div>
-            <div class="materia-detalhes">
-                <div class="materia-grid">
-                    <div class="nota-box">
-                        <span class="nota-label">1º Trimestre</span>
-                        <span class="nota-valor">${formatarNota(d.n1)}</span>
+
+            <div class="materia-corpo">
+                <div class="grade-notas-edit">
+                    <div class="campo-box">
+                        <label>1º Trimestre</label>
+                        <input type="text" class="input-nota" data-id="${m.id}" data-campo="tri1" value="${formatarInputNota(m.tri1)}" placeholder="—" ${disabledAttr}>
                     </div>
-                    <div class="nota-box">
-                        <span class="nota-label">2º Trimestre</span>
-                        <span class="nota-valor">${formatarNota(d.n2)}</span>
+                    <div class="campo-box">
+                        <label>2º Trimestre</label>
+                        <input type="text" class="input-nota" data-id="${m.id}" data-campo="tri2" value="${formatarInputNota(m.tri2)}" placeholder="—" ${disabledAttr}>
                     </div>
-                    <div class="nota-box">
-                        <span class="nota-label">3º Trimestre</span>
-                        <span class="nota-valor">${formatarNota(d.n3)}</span>
+                    <div class="campo-box">
+                        <label>3º Trimestre</label>
+                        <input type="text" class="input-nota" data-id="${m.id}" data-campo="tri3" value="${formatarInputNota(m.tri3)}" placeholder="—" ${disabledAttr}>
                     </div>
-                    <div class="nota-box nota-box-destaque">
-                        <span class="nota-label">Média Atual</span>
-                        <span class="nota-valor nota-destaque">${mediaStr}</span>
+                    <div class="campo-box destaque-media">
+                        <label>Média Atual</label>
+                        <div class="valor-calculado" id="media-box-${m.id}">${mediaStr}</div>
                     </div>
-                    <div class="nota-box">
-                        <span class="nota-label">Faltas</span>
-                        <span class="nota-valor">${d.totalFaltas}</span>
+                    <div class="campo-box">
+                        <label>Faltas (1º / 2º / 3º Tri)</label>
+                        <div class="faltas-trimestres">
+                            <input type="number" min="0" class="input-falta" data-id="${m.id}" data-campo="f1" value="${m.f1}" ${disabledAttr}>
+                            <input type="number" min="0" class="input-falta" data-id="${m.id}" data-campo="f2" value="${m.f2}" ${disabledAttr}>
+                            <input type="number" min="0" class="input-falta" data-id="${m.id}" data-campo="f3" value="${m.f3}" ${disabledAttr}>
+                        </div>
                     </div>
                 </div>
-                <div class="barra-progresso-fundo" title="Desempenho: ${mediaStr} / 10">
-                    <div class="barra-progresso-preenchimento ${classeAlerta}" style="width: ${porcentagemBarra}%"></div>
+                <div class="progresso-trilha">
+                    <div class="progresso-barra ${info.media !== null && info.media < 6 ? 'baixo' : ''}" id="barra-${m.id}" style="width: ${larguraBarra}%"></div>
                 </div>
             </div>
         `;
 
+        // Abrir/Fechar card
         card.querySelector('.materia-header').addEventListener('click', () => {
             card.classList.toggle('aberto');
+        });
+
+        // Eventos de edição nas notas
+        card.querySelectorAll('.input-nota').forEach(input => {
+            input.addEventListener('click', e => e.stopPropagation());
+
+            input.addEventListener('input', (e) => {
+                const id = Number(e.target.dataset.id);
+                const campo = e.target.dataset.campo;
+                const mat = materias.find(item => item.id === id);
+                if (!mat) return;
+
+                mat[campo] = normalizarNota(e.target.value);
+                atualizarCardIndividual(mat);
+                atualizarKPIs();
+                renderizarTabelaGeral();
+                salvarLocalmente();
+            });
+
+            input.addEventListener('blur', (e) => {
+                const id = Number(e.target.dataset.id);
+                const campo = e.target.dataset.campo;
+                const mat = materias.find(item => item.id === id);
+                if (mat) {
+                    e.target.value = formatarInputNota(mat[campo]);
+                    renderizarGraficos();
+                }
+            });
+        });
+
+        // Eventos de edição nas faltas
+        card.querySelectorAll('.input-falta').forEach(input => {
+            input.addEventListener('click', e => e.stopPropagation());
+
+            input.addEventListener('input', (e) => {
+                const id = Number(e.target.dataset.id);
+                const campo = e.target.dataset.campo;
+                const mat = materias.find(item => item.id === id);
+                if (!mat) return;
+
+                mat[campo] = Math.max(0, parseInt(e.target.value) || 0);
+                atualizarCardIndividual(mat);
+                atualizarKPIs();
+                renderizarTabelaGeral();
+                salvarLocalmente();
+            });
+
+            input.addEventListener('blur', () => renderizarGraficos());
         });
 
         container.appendChild(card);
     });
 }
 
-function renderizarTabelaFaltas() {
-    const corpo = document.getElementById('tabela-faltas-corpo');
-    corpo.innerHTML = '';
+function atualizarCardIndividual(m) {
+    const info = calcularInfoMateria(m);
+    const mediaStr = formatarNota(info.media);
 
-    dadosProcessados.forEach(d => {
-        const statusFalta = d.totalFaltas >= 10
-            ? `<span class="situacao-badge situacao-atencao">Atenção</span>`
-            : `<span class="situacao-badge situacao-bom">Regular</span>`;
+    const badge = document.getElementById(`badge-${m.id}`);
+    const pilulaMedia = document.getElementById(`pilula-media-${m.id}`);
+    const pilulaFaltas = document.getElementById(`pilula-faltas-${m.id}`);
+    const mediaBox = document.getElementById(`media-box-${m.id}`);
+    const barra = document.getElementById(`barra-${m.id}`);
 
+    if (badge) {
+        badge.className = `badge-status ${info.statusClass}`;
+        badge.innerText = info.statusLabel;
+    }
+    if (pilulaMedia) pilulaMedia.innerText = `Média: ${mediaStr}`;
+    if (pilulaFaltas) pilulaFaltas.innerText = `Faltas: ${info.totalFaltas}`;
+    if (mediaBox) mediaBox.innerText = mediaStr;
+    if (barra) {
+        barra.style.width = `${info.media !== null ? Math.min(100, info.media * 10) : 0}%`;
+        barra.className = `progresso-barra ${info.media !== null && info.media < 6 ? 'baixo' : ''}`;
+    }
+}
+
+function renderizarTabelaGeral() {
+    const tbody = document.getElementById('corpo-tabela-geral');
+    tbody.innerHTML = '';
+
+    materias.forEach(m => {
+        const info = calcularInfoMateria(m);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><strong>${d.disciplina}</strong></td>
-            <td>${d.f1}</td>
-            <td>${d.f2}</td>
-            <td>${d.f3}</td>
-            <td><strong>${d.totalFaltas}</strong></td>
-            <td>${statusFalta}</td>
+            <td><strong>${m.disciplina}</strong></td>
+            <td>${formatarNota(m.tri1)}</td>
+            <td>${formatarNota(m.tri2)}</td>
+            <td>${formatarNota(m.tri3)}</td>
+            <td><strong>${formatarNota(info.media)}</strong></td>
+            <td>${info.totalFaltas}</td>
+            <td><span class="badge-status ${info.statusClass}">${info.statusLabel}</span></td>
         `;
-        corpo.appendChild(tr);
+        tbody.appendChild(tr);
     });
 }
 
 function renderizarGraficos() {
     if (typeof Chart === 'undefined') return;
 
-    const isLight = document.body.classList.contains('light-mode');
-    const corTexto = isLight ? '#1d1030' : '#ede8f5';
-    const corGrade = isLight ? '#dcd0ed' : '#2f1d4a';
-    const corVerde = isLight ? '#1e7e45' : '#27ae60';
-    const corVermelho = isLight ? '#c0392b' : '#e74c3c';
-    const corCinza = isLight ? '#8c7ba6' : '#5e4d78';
+    const isDark = document.body.classList.contains('dark-mode');
+    const corTexto = isDark ? '#cbd5e1' : '#475569';
+    const corGrade = isDark ? '#334155' : '#e2e8f0';
 
-    const comMedia = dadosProcessados.filter(d => d.media !== null);
-    const labels = comMedia.map(d => d.disciplina);
-    const valores = comMedia.map(d => Number(d.media.toFixed(1)));
-    const coresBarras = valores.map(v => v >= 6.0 ? corVerde : corVermelho);
+    const comNota = materias.map(m => ({ nome: m.disciplina, info: calcularInfoMateria(m) }))
+                            .filter(x => x.info.media !== null);
 
     if (chartMedias) chartMedias.destroy();
-    chartMedias = new Chart(document.getElementById('graficoMedias'), {
+    chartMedias = new Chart(document.getElementById('chartMedias'), {
         type: 'bar',
         data: {
-            labels,
+            labels: comNota.map(x => x.nome),
             datasets: [{
                 label: 'Média',
-                data: valores,
-                backgroundColor: coresBarras,
+                data: comNota.map(x => Number(x.info.media.toFixed(1))),
+                backgroundColor: comNota.map(x => x.info.media >= 6 ? '#10b981' : '#ef4444'),
                 borderRadius: 6
             }]
         },
@@ -340,18 +454,18 @@ function renderizarGraficos() {
         }
     });
 
-    const bom = dadosProcessados.filter(d => d.status === 'bom').length;
-    const atencao = dadosProcessados.filter(d => d.status === 'atencao').length;
-    const pendente = dadosProcessados.filter(d => d.status === 'pendente').length;
+    const bom = materias.filter(m => calcularInfoMateria(m).status === 'bom').length;
+    const atencao = materias.filter(m => calcularInfoMateria(m).status === 'atencao').length;
+    const pendente = materias.filter(m => calcularInfoMateria(m).status === 'pendente').length;
 
-    if (chartSituacao) chartSituacao.destroy();
-    chartSituacao = new Chart(document.getElementById('graficoSituacao'), {
+    if (chartStatus) chartStatus.destroy();
+    chartStatus = new Chart(document.getElementById('chartStatus'), {
         type: 'doughnut',
         data: {
-            labels: ['Bom Desempenho', 'Atenção', 'Pendentes'],
+            labels: ['Na Média (≥ 6,0)', 'Atenção (< 6,0)', 'Sem Notas'],
             datasets: [{
                 data: [bom, atencao, pendente],
-                backgroundColor: [corVerde, corVermelho, corCinza],
+                backgroundColor: ['#10b981', '#ef4444', '#94a3b8'],
                 borderWidth: 0
             }]
         },
@@ -363,14 +477,14 @@ function renderizarGraficos() {
     });
 
     if (chartFaltas) chartFaltas.destroy();
-    chartFaltas = new Chart(document.getElementById('graficoFaltas'), {
+    chartFaltas = new Chart(document.getElementById('chartFaltas'), {
         type: 'bar',
         data: {
-            labels: dadosProcessados.map(d => d.disciplina),
+            labels: materias.map(m => m.disciplina),
             datasets: [{
                 label: 'Faltas',
-                data: dadosProcessados.map(d => d.totalFaltas),
-                backgroundColor: '#6c3483',
+                data: materias.map(m => calcularInfoMateria(m).totalFaltas),
+                backgroundColor: '#2563eb',
                 borderRadius: 5
             }]
         },
@@ -386,60 +500,54 @@ function renderizarGraficos() {
     });
 }
 
-// --- CARREGAMENTO DO GOOGLE DRIVE ---
-async function buscarDadosPlanilha() {
-    const statusEl = document.getElementById('status-conexao');
-    statusEl.innerText = "Sincronizando com Google Drive...";
-
-    try {
-        const cacheBuster = `&t=${Date.now()}`;
-        const [resNotas, resFaltas] = await Promise.all([
-            fetch(URL_NOTAS + cacheBuster),
-            fetch(URL_FALTAS + cacheBuster)
-        ]);
-
-        if (!resNotas.ok || !resFaltas.ok) throw new Error("Erro de rede");
-
-        const matrizNotas = parseCSV(await resNotas.text());
-        const matrizFaltas = parseCSV(await resFaltas.text());
-
-        const listaExtraida = [];
-
-        for (let i = 1; i < matrizNotas.length; i++) {
-            const linha = matrizNotas[i];
-            if (!linha || !linha[0]) continue;
-
-            const nomeDisc = linha[0];
-            const linhaFalta = matrizFaltas.find(f => f[0]?.toLowerCase() === nomeDisc.toLowerCase()) || matrizFaltas[i] || [];
-
-            listaExtraida.push({
-                disciplina: nomeDisc,
-                tri1: linha[1],
-                tri2: linha[2],
-                tri3: linha[3],
-                faltas: [linhaFalta[1], linhaFalta[2], linhaFalta[3]]
-            });
-        }
-
-        if (listaExtraida.length > 0) {
-            dadosProcessados = processarListaBruta(listaExtraida);
-            statusEl.innerText = "● Conectado ao Google Drive (Atualizado)";
-        } else {
-            throw new Error("Planilha vazia");
-        }
-    } catch (erro) {
-        console.warn("Usando dados locais de backup:", erro);
-        dadosProcessados = processarListaBruta(dadosBoletimReserva);
-        statusEl.innerText = "● Modo Offline (Dados de backup)";
+// --- CONTROLES E EVENTOS ---
+function configurarEventos() {
+    // Alternar Tema
+    const btnTema = document.getElementById('btn-tema');
+    if (localStorage.getItem('boletim_tema_dark') === 'true') {
+        document.body.classList.add('dark-mode');
+        btnTema.innerText = '☀️';
     }
 
-    atualizarKPIs();
-    renderizarListaMaterias();
-    renderizarTabelaFaltas();
-    renderizarGraficos();
-}
+    btnTema.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const dark = document.body.classList.contains('dark-mode');
+        btnTema.innerText = dark ? '☀️' : '🌙';
+        localStorage.setItem('boletim_tema_dark', dark);
+        renderizarGraficos();
+    });
 
-function inicializarControles() {
+    // Alternar Modo Edição (Bloquear / Desbloquear campos)
+    const btnEdicao = document.getElementById('btn-modo-edicao');
+    const bannerEdicao = document.getElementById('banner-edicao');
+    btnEdicao.addEventListener('click', () => {
+        modoEdicao = !modoEdicao;
+        btnEdicao.classList.toggle('btn-editar-ativo', modoEdicao);
+        btnEdicao.innerText = modoEdicao ? "✏️ Editando Notas" : "🔒 Edição Bloqueada";
+        bannerEdicao.classList.toggle('escondido', !modoEdicao);
+        renderizarListaMaterias();
+    });
+
+    // Puxar dados originais da planilha do Drive
+    document.getElementById('btn-puxar-drive').addEventListener('click', () => {
+        if (confirm("Deseja substituir as edições locais pelos dados atuais da planilha do Google Drive?")) {
+            localStorage.removeItem(STORAGE_KEY);
+            sincronizarComDrive(true);
+        }
+    });
+
+    // Abas
+    document.querySelectorAll('.aba-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
+            document.querySelectorAll('.aba-painel').forEach(p => p.classList.remove('ativa'));
+            btn.classList.add('ativa');
+            document.getElementById(btn.dataset.aba).classList.add('ativa');
+            if (btn.dataset.aba === 'aba-graficos') renderizarGraficos();
+        });
+    });
+
+    // Busca e Filtros
     document.getElementById('input-busca').addEventListener('input', renderizarListaMaterias);
 
     document.querySelectorAll('.filtro-btn').forEach(btn => {
@@ -451,21 +559,17 @@ function inicializarControles() {
         });
     });
 
-    const btnExpandir = document.getElementById('btn-expandir-todas');
+    const btnExpandir = document.getElementById('btn-expandir-tudo');
     btnExpandir.addEventListener('click', () => {
-        todasExpandidas = !todasExpandidas;
-        btnExpandir.innerText = todasExpandidas ? "Recolher Todas" : "Expandir Todas";
+        expandirTodas = !expandirTodas;
+        btnExpandir.innerText = expandirTodas ? "Recolher Todas" : "Expandir Todas";
         renderizarListaMaterias();
     });
-
-    document.getElementById('btn-sincronizar').addEventListener('click', buscarDadosPlanilha);
 }
 
-function iniciarSistema() {
-    inicializarTema();
-    inicializarAbas();
-    inicializarControles();
-    buscarDadosPlanilha();
+function iniciarApp() {
+    configurarEventos();
+    sincronizarComDrive(false);
 }
 
-inicializarSeguranca();
+configurarLogin();
