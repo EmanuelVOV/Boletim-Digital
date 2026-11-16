@@ -2,7 +2,7 @@ const SENHA_CORRETA = "Mell07312002";
 const SPREADSHEET_ID = "1yhQkt8Q6tlIvcg5Fon3mdXZ3cMR-mnTXi7A7gDxXxPc";
 const URL_NOTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Notas`;
 const URL_FALTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Faltas`;
-const STORAGE_KEY = "boletim_8ano_dados_v1";
+const STORAGE_KEY = "boletim_8ano_dados_v2";
 
 let materias = [];
 let modoEdicao = true;
@@ -12,7 +12,7 @@ let chartMedias = null;
 let chartStatus = null;
 let chartFaltas = null;
 
-// Dados iniciais de backup caso o Drive esteja indisponível no primeiro acesso
+// Dados iniciais de backup caso o Drive esteja indisponível
 const dadosBackup = [
     { id: 0, disciplina: "Língua Portuguesa", tri1: 8.2, tri2: 7.8, tri3: 8.5, f1: 2, f2: 1, f3: 1 },
     { id: 1, disciplina: "Matemática", tri1: 5.2, tri2: 5.8, tri3: null, f1: 3, f2: 2, f3: 1 },
@@ -30,6 +30,20 @@ const dadosBackup = [
     { id: 13, disciplina: "Literatura Arte e Movimento", tri1: 7.7, tri2: 8.0, tri3: null, f1: 1, f2: 0, f3: 1 },
     { id: 14, disciplina: "Práticas Experimentais", tri1: 5.8, tri2: 6.2, tri3: 6.4, f1: 1, f2: 1, f3: 1 }
 ];
+
+// Filtra linhas de legenda, instruções e totais da planilha
+function ehMateriaValida(nome) {
+    if (!nome) return false;
+    const texto = nome.trim().toLowerCase();
+    if (texto === "" || texto.startsWith("•")) return false;
+    if (texto.includes("total geral")) return false;
+    if (texto.startsWith("legenda")) return false;
+    if (texto.includes("células brancas")) return false;
+    if (texto.includes("calculados automaticamente")) return false;
+    if (texto.includes("não altere as fórmulas")) return false;
+    if (texto === "disciplina" || texto === "matéria") return false;
+    return true;
+}
 
 // --- LOGIN / SENHA ---
 function configurarLogin() {
@@ -81,7 +95,7 @@ function normalizarNota(valor) {
     if (valor === null || valor === undefined || valor === "" || valor === "—") return null;
     if (typeof valor === 'string') {
         valor = valor.replace(/"/g, '').replace(',', '.').trim();
-        if (valor === "") return null;
+        if (valor === "" || valor === "-") return null;
     }
 
     let num = Number(valor);
@@ -94,15 +108,15 @@ function normalizarNota(valor) {
 }
 
 function formatarNota(nota) {
-    return nota === null ? "—" : nota.toFixed(1).replace('.', ',');
+    return nota === null || isNaN(nota) ? "—" : nota.toFixed(1).replace('.', ',');
 }
 
 function formatarInputNota(nota) {
-    return nota === null ? "" : nota.toFixed(1).replace('.', ',');
+    return nota === null || isNaN(nota) ? "" : nota.toFixed(1).replace('.', ',');
 }
 
 function calcularInfoMateria(m) {
-    const validas = [m.tri1, m.tri2, m.tri3].filter(n => n !== null && !isNaN(n));
+    const validas = [m.tri1, m.tri2, m.tri3].filter(n => n !== null && n !== undefined && !isNaN(n));
     const totalFaltas = (Number(m.f1) || 0) + (Number(m.f2) || 0) + (Number(m.f3) || 0);
 
     let media = null;
@@ -111,7 +125,9 @@ function calcularInfoMateria(m) {
     let statusClass = "status-pendente";
 
     if (validas.length > 0) {
-        media = validas.reduce((a, b) => a + b, 0) / validas.length;
+        const soma = validas.reduce((acc, val) => acc + Number(val), 0);
+        media = Math.round((soma / validas.length) * 10) / 10;
+
         if (media >= 6.0) {
             status = "bom";
             statusLabel = "Bom Desempenho";
@@ -147,10 +163,13 @@ async function sincronizarComDrive(forcarDrive = false) {
         const salvo = localStorage.getItem(STORAGE_KEY);
         if (salvo) {
             try {
-                materias = JSON.parse(salvo);
-                statusEl.innerText = "● Dados locais carregados";
-                atualizarTudo();
-                return;
+                const parsed = JSON.parse(salvo).filter(m => ehMateriaValida(m.disciplina));
+                if (parsed.length > 0) {
+                    materias = parsed;
+                    statusEl.innerText = "● Dados locais carregados";
+                    atualizarTudo();
+                    return;
+                }
             } catch (e) {
                 console.warn("Erro ao ler dados salvos:", e);
             }
@@ -172,15 +191,15 @@ async function sincronizarComDrive(forcarDrive = false) {
         const matrizFaltas = parseCSV(await resFaltas.text());
 
         const novaLista = [];
-        for (let i = 1; i < matrizNotas.length; i++) {
+        for (let i = 1; i <= 15; i++) {
             const row = matrizNotas[i];
-            if (!row || !row[0]) continue;
+            if (!row || !ehMateriaValida(row[0])) continue;
 
-            const nome = row[0];
-            const rowFalta = matrizFaltas.find(f => f[0]?.toLowerCase() === nome.toLowerCase()) || matrizFaltas[i] || [];
+            const nome = row[0].trim();
+            const rowFalta = matrizFaltas.find(f => f[0]?.trim().toLowerCase() === nome.toLowerCase()) || matrizFaltas[i] || [];
 
             novaLista.push({
-                id: i - 1,
+                id: novaLista.length,
                 disciplina: nome,
                 tri1: normalizarNota(row[1]),
                 tri2: normalizarNota(row[2]),
@@ -291,15 +310,15 @@ function renderizarListaMaterias() {
                 <div class="grade-notas-edit">
                     <div class="campo-box">
                         <label>1º Trimestre</label>
-                        <input type="text" class="input-nota" data-id="${m.id}" data-campo="tri1" value="${formatarInputNota(m.tri1)}" placeholder="—" ${disabledAttr}>
+                        <input type="text" inputmode="decimal" class="input-nota" data-id="${m.id}" data-campo="tri1" value="${formatarInputNota(m.tri1)}" placeholder="—" ${disabledAttr}>
                     </div>
                     <div class="campo-box">
                         <label>2º Trimestre</label>
-                        <input type="text" class="input-nota" data-id="${m.id}" data-campo="tri2" value="${formatarInputNota(m.tri2)}" placeholder="—" ${disabledAttr}>
+                        <input type="text" inputmode="decimal" class="input-nota" data-id="${m.id}" data-campo="tri2" value="${formatarInputNota(m.tri2)}" placeholder="—" ${disabledAttr}>
                     </div>
                     <div class="campo-box">
                         <label>3º Trimestre</label>
-                        <input type="text" class="input-nota" data-id="${m.id}" data-campo="tri3" value="${formatarInputNota(m.tri3)}" placeholder="—" ${disabledAttr}>
+                        <input type="text" inputmode="decimal" class="input-nota" data-id="${m.id}" data-campo="tri3" value="${formatarInputNota(m.tri3)}" placeholder="—" ${disabledAttr}>
                     </div>
                     <div class="campo-box destaque-media">
                         <label>Média Atual</label>
@@ -340,12 +359,19 @@ function renderizarListaMaterias() {
                 salvarLocalmente();
             });
 
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') e.target.blur();
+            });
+
             input.addEventListener('blur', (e) => {
                 const id = Number(e.target.dataset.id);
                 const campo = e.target.dataset.campo;
                 const mat = materias.find(item => item.id === id);
                 if (mat) {
                     e.target.value = formatarInputNota(mat[campo]);
+                    atualizarCardIndividual(mat);
+                    atualizarKPIs();
+                    renderizarTabelaGeral();
                     renderizarGraficos();
                 }
             });
@@ -421,11 +447,11 @@ function renderizarGraficos() {
     if (typeof Chart === 'undefined') return;
 
     const isLight = document.body.classList.contains('light-mode');
-    const corTexto = isLight ? '#334155' : '#b8c0d9';
-    const corGrade = isLight ? '#e2e8f0' : '#1f2438';
-    const corVerde = isLight ? '#059669' : '#00ff87';
-    const corVermelho = isLight ? '#e11d48' : '#ff2a6d';
-    const corCiano = isLight ? '#0284c7' : '#00f3ff';
+    const corTexto = isLight ? '#54333d' : '#cbb5bc';
+    const corGrade = isLight ? '#e4cfd5' : '#36151e';
+    const corVinho = isLight ? '#8f162b' : '#d93854';
+    const corAlerta = isLight ? '#e11d48' : '#ff4d6d';
+    const corFaltas = isLight ? '#a81c34' : '#f26b83';
 
     const comNota = materias.map(m => ({ nome: m.disciplina, info: calcularInfoMateria(m) }))
                             .filter(x => x.info.media !== null);
@@ -438,7 +464,7 @@ function renderizarGraficos() {
             datasets: [{
                 label: 'Média',
                 data: comNota.map(x => Number(x.info.media.toFixed(1))),
-                backgroundColor: comNota.map(x => x.info.media >= 6 ? corVerde : corVermelho),
+                backgroundColor: comNota.map(x => x.info.media >= 6 ? corVinho : corAlerta),
                 borderRadius: 6
             }]
         },
@@ -464,7 +490,7 @@ function renderizarGraficos() {
             labels: ['Na Média (≥ 6,0)', 'Atenção (< 6,0)', 'Sem Notas'],
             datasets: [{
                 data: [bom, atencao, pendente],
-                backgroundColor: [corVerde, corVermelho, '#64748b'],
+                backgroundColor: ['#2dd4bf', corAlerta, '#64748b'],
                 borderWidth: 0
             }]
         },
@@ -483,7 +509,7 @@ function renderizarGraficos() {
             datasets: [{
                 label: 'Faltas',
                 data: materias.map(m => calcularInfoMateria(m).totalFaltas),
-                backgroundColor: corCiano,
+                backgroundColor: corFaltas,
                 borderRadius: 5
             }]
         },
@@ -501,7 +527,6 @@ function renderizarGraficos() {
 
 // --- CONTROLES E EVENTOS ---
 function configurarEventos() {
-    // Alternar Tema (Padrão: Preto e Neon / Opcional: Claro)
     const btnTema = document.getElementById('btn-tema');
     if (localStorage.getItem('boletim_tema_light') === 'true') {
         document.body.classList.add('light-mode');
@@ -516,7 +541,6 @@ function configurarEventos() {
         renderizarGraficos();
     });
 
-    // Alternar Modo Edição
     const btnEdicao = document.getElementById('btn-modo-edicao');
     const bannerEdicao = document.getElementById('banner-edicao');
     btnEdicao.addEventListener('click', () => {
@@ -527,7 +551,6 @@ function configurarEventos() {
         renderizarListaMaterias();
     });
 
-    // Puxar dados originais da planilha do Drive
     document.getElementById('btn-puxar-drive').addEventListener('click', () => {
         if (confirm("Deseja substituir as edições locais pelos dados atuais da planilha do Google Drive?")) {
             localStorage.removeItem(STORAGE_KEY);
@@ -535,7 +558,6 @@ function configurarEventos() {
         }
     });
 
-    // Abas
     document.querySelectorAll('.aba-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
@@ -546,7 +568,6 @@ function configurarEventos() {
         });
     });
 
-    // Busca e Filtros
     document.getElementById('input-busca').addEventListener('input', renderizarListaMaterias);
 
     document.querySelectorAll('.filtro-btn').forEach(btn => {

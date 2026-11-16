@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boletim Digital Neon - 8º Ano</title>
+    <title>Boletim Digital - 8º Ano</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -12,7 +12,7 @@
     <!-- Tela de Autenticação -->
     <div id="tela-login" class="tela-login">
         <div class="login-card">
-            <div class="login-logo">⚡</div>
+            <div class="login-logo">🍷</div>
             <span class="login-tag">PORTAL DO ESTUDANTE</span>
             <h2>Boletim Digital</h2>
             <p>Digite a senha para acessar e editar suas notas e frequência.</p>
@@ -34,7 +34,7 @@
         <header class="topbar">
             <div class="topbar-container">
                 <div class="perfil-aluno">
-                    <div class="avatar-aluno">⚡</div>
+                    <div class="avatar-aluno">🎓</div>
                     <div>
                         <div class="badges-topo">
                             <span class="badge-serie">8º ANO • ENSINO FUNDAMENTAL</span>
@@ -48,7 +48,7 @@
                     <button id="btn-modo-edicao" class="btn-topo btn-editar-ativo" title="Ativar ou desativar edição de notas">
                         ✏️ Editando Notas
                     </button>
-                    <button id="btn-puxar-drive" class="btn-topo" title="Substituir pelos dados atuais da planilha do Google Drive">
+                    <button id="btn-puxar-drive" class="btn-topo" title="Buscar dados originais da planilha do Google Drive">
                         ☁️ Puxar do Drive
                     </button>
                     <button id="btn-tema" class="btn-topo btn-icone-apenas" title="Alternar tema claro/escuro">
@@ -65,19 +65,19 @@
             
             <!-- Aviso de Edição -->
             <div id="banner-edicao" class="banner-edicao">
-                <span>💡 <strong>Modo de Edição Ativo:</strong> Clique em qualquer matéria para digitar ou alterar as notas (0 a 10) e faltas. As médias, gráficos e resumos atualizam na hora!</span>
+                <span>💡 <strong>Modo de Edição Ativo:</strong> Digite ou altere as notas (0 a 10) e faltas em qualquer matéria. As médias, gráficos e resumos calculam automaticamente!</span>
                 <span id="indicador-salvo" class="indicador-salvo">✓ Salvo no navegador</span>
             </div>
 
             <!-- Cards de Resumo (KPIs) -->
             <section class="kpis-grid">
-                <div class="kpi-card kpi-ciano">
+                <div class="kpi-card kpi-vinho">
                     <div class="kpi-topo">
                         <span>Média Geral</span>
                         <span>📈</span>
                     </div>
                     <strong id="kpi-media" class="kpi-numero">—</strong>
-                    <small>Média global das disciplinas</small>
+                    <small>Média global das 15 disciplinas</small>
                 </div>
 
                 <div class="kpi-card kpi-verde">
@@ -89,7 +89,7 @@
                     <small>Disciplinas com bom desempenho</small>
                 </div>
 
-                <div class="kpi-card kpi-rosa">
+                <div class="kpi-card kpi-alerta">
                     <div class="kpi-topo">
                         <span>Em Atenção (&lt; 6,0)</span>
                         <span>⚠️</span>
@@ -98,7 +98,7 @@
                     <small>Disciplinas abaixo da média</small>
                 </div>
 
-                <div class="kpi-card kpi-roxo">
+                <div class="kpi-card kpi-rubi">
                     <div class="kpi-topo">
                         <span>Frequência Estimada</span>
                         <span>📅</span>
@@ -107,7 +107,7 @@
                     <small id="kpi-frequencia-desc">Frequência regular</small>
                 </div>
 
-                <div class="kpi-card kpi-amarelo">
+                <div class="kpi-card kpi-ouro">
                     <div class="kpi-topo">
                         <span>Total de Faltas</span>
                         <span>🕒</span>
