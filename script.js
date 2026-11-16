@@ -7,12 +7,11 @@ const STORAGE_KEY = "boletim_8ano_dados_v2";
 let materias = [];
 let modoEdicao = true;
 let filtroAtual = "todas";
-let expandirTodas = true;
+let expandirTodas = false;
 let chartMedias = null;
 let chartStatus = null;
 let chartFaltas = null;
 
-// Dados iniciais de backup caso o Drive esteja indisponível
 const dadosBackup = [
     { id: 0, disciplina: "Língua Portuguesa", tri1: 8.2, tri2: 7.8, tri3: 8.5, f1: 2, f2: 1, f3: 1 },
     { id: 1, disciplina: "Matemática", tri1: 5.2, tri2: 5.8, tri3: null, f1: 3, f2: 2, f3: 1 },
@@ -31,7 +30,6 @@ const dadosBackup = [
     { id: 14, disciplina: "Práticas Experimentais", tri1: 5.8, tri2: 6.2, tri3: 6.4, f1: 1, f2: 1, f3: 1 }
 ];
 
-// Filtra linhas de legenda, instruções e totais da planilha
 function ehMateriaValida(nome) {
     if (!nome) return false;
     const texto = nome.trim().toLowerCase();
@@ -45,7 +43,7 @@ function ehMateriaValida(nome) {
     return true;
 }
 
-// --- LOGIN / SENHA ---
+// --- LOGIN ---
 function configurarLogin() {
     const telaLogin = document.getElementById('tela-login');
     const conteudo = document.getElementById('conteudo-boletim');
@@ -73,7 +71,7 @@ function configurarLogin() {
             conteudo.classList.remove('escondido');
             iniciarApp();
         } else {
-            msgErro.innerText = "Senha incorreta! Verifique e tente novamente.";
+            msgErro.innerText = "Senha incorreta.";
             campoSenha.value = "";
             campoSenha.focus();
         }
@@ -90,7 +88,7 @@ function configurarLogin() {
     });
 }
 
-// --- NORMALIZAÇÃO E CÁLCULOS ---
+// --- CÁLCULOS ---
 function normalizarNota(valor) {
     if (valor === null || valor === undefined || valor === "" || valor === "—") return null;
     if (typeof valor === 'string') {
@@ -121,7 +119,7 @@ function calcularInfoMateria(m) {
 
     let media = null;
     let status = "pendente";
-    let statusLabel = "Sem notas";
+    let statusLabel = "Pendente";
     let statusClass = "status-pendente";
 
     if (validas.length > 0) {
@@ -130,7 +128,7 @@ function calcularInfoMateria(m) {
 
         if (media >= 6.0) {
             status = "bom";
-            statusLabel = "Bom Desempenho";
+            statusLabel = "Na média";
             statusClass = "status-bom";
         } else {
             status = "atencao";
@@ -142,12 +140,10 @@ function calcularInfoMateria(m) {
     return { media, totalFaltas, status, statusLabel, statusClass };
 }
 
-// --- PERSISTÊNCIA E GOOGLE DRIVE ---
+// --- DADOS ---
 function salvarLocalmente() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(materias));
-    const indicador = document.getElementById('indicador-salvo');
-    indicador.innerText = "✓ Alterações salvas";
-    document.getElementById('status-sync').innerText = "● Editado localmente";
+    document.getElementById('status-sync').innerText = "Salvo";
 }
 
 function parseCSV(texto) {
@@ -166,17 +162,17 @@ async function sincronizarComDrive(forcarDrive = false) {
                 const parsed = JSON.parse(salvo).filter(m => ehMateriaValida(m.disciplina));
                 if (parsed.length > 0) {
                     materias = parsed;
-                    statusEl.innerText = "● Dados locais carregados";
+                    statusEl.innerText = "Salvo localmente";
                     atualizarTudo();
                     return;
                 }
             } catch (e) {
-                console.warn("Erro ao ler dados salvos:", e);
+                console.warn(e);
             }
         }
     }
 
-    statusEl.innerText = "⏳ Buscando do Google Drive...";
+    statusEl.innerText = "Sincronizando...";
 
     try {
         const nocache = `&t=${Date.now()}`;
@@ -185,7 +181,7 @@ async function sincronizarComDrive(forcarDrive = false) {
             fetch(URL_FALTAS + nocache)
         ]);
 
-        if (!resNotas.ok || !resFaltas.ok) throw new Error("Falha ao acessar planilha");
+        if (!resNotas.ok || !resFaltas.ok) throw new Error("Erro de rede");
 
         const matrizNotas = parseCSV(await resNotas.text());
         const matrizFaltas = parseCSV(await resFaltas.text());
@@ -213,22 +209,21 @@ async function sincronizarComDrive(forcarDrive = false) {
         if (novaLista.length > 0) {
             materias = novaLista;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(materias));
-            statusEl.innerText = "● Sincronizado com Google Drive";
+            statusEl.innerText = "Sincronizado";
         } else {
-            throw new Error("Planilha vazia");
+            throw new Error("Vazio");
         }
     } catch (erro) {
-        console.warn("Usando backup local:", erro);
         if (materias.length === 0) {
             materias = JSON.parse(JSON.stringify(dadosBackup));
         }
-        statusEl.innerText = "● Modo Offline (Backup)";
+        statusEl.innerText = "Modo offline";
     }
 
     atualizarTudo();
 }
 
-// --- ATUALIZAÇÃO DA INTERFACE ---
+// --- INTERFACE ---
 function atualizarTudo() {
     atualizarKPIs();
     renderizarListaMaterias();
@@ -255,17 +250,14 @@ function atualizarKPIs() {
     });
 
     const mediaGeral = qtdMedias > 0 ? (somaMedias / qtdMedias).toFixed(1).replace('.', ',') : "—";
-
     const aulasTotais = 800;
     const freqNum = Math.max(0, Math.min(100, ((aulasTotais - somaFaltas) / aulasTotais) * 100));
-    const freqStr = freqNum.toFixed(1).replace('.', ',') + "%";
 
     document.getElementById('kpi-media').innerText = mediaGeral;
     document.getElementById('kpi-bom').innerText = qtdBom;
     document.getElementById('kpi-atencao').innerText = qtdAtencao;
     document.getElementById('kpi-faltas').innerText = somaFaltas;
-    document.getElementById('kpi-frequencia').innerText = freqStr;
-    document.getElementById('kpi-frequencia-desc').innerText = freqNum >= 75 ? "Frequência regular (≥ 75%)" : "Alerta de baixa frequência";
+    document.getElementById('kpi-frequencia').innerText = `${freqNum.toFixed(1).replace('.', ',')}% freq.`;
 }
 
 function renderizarListaMaterias() {
@@ -281,14 +273,13 @@ function renderizarListaMaterias() {
     });
 
     if (filtradas.length === 0) {
-        container.innerHTML = `<p style="text-align:center; padding: 24px; color: var(--text-muted);">Nenhuma disciplina encontrada.</p>`;
+        container.innerHTML = `<p style="text-align:center; padding: 24px; color: var(--text-muted); font-size: 0.9rem;">Nenhuma disciplina encontrada.</p>`;
         return;
     }
 
     filtradas.forEach(m => {
         const info = calcularInfoMateria(m);
         const mediaStr = formatarNota(info.media);
-        const larguraBarra = info.media !== null ? Math.min(100, info.media * 10) : 0;
         const disabledAttr = modoEdicao ? "" : "disabled";
 
         const card = document.createElement('article');
@@ -300,8 +291,7 @@ function renderizarListaMaterias() {
                     <span class="badge-status ${info.statusClass}" id="badge-${m.id}">${info.statusLabel}</span>
                 </div>
                 <div class="materia-dir">
-                    <span class="pilula-info pilula-media" id="pilula-media-${m.id}">Média: ${mediaStr}</span>
-                    <span class="pilula-info" id="pilula-faltas-${m.id}">Faltas: ${info.totalFaltas}</span>
+                    <span class="nota-resumo" id="resumo-media-${m.id}">${mediaStr}</span>
                     <span class="seta-accordion">▼</span>
                 </div>
             </div>
@@ -320,21 +310,18 @@ function renderizarListaMaterias() {
                         <label>3º Trimestre</label>
                         <input type="text" inputmode="decimal" class="input-nota" data-id="${m.id}" data-campo="tri3" value="${formatarInputNota(m.tri3)}" placeholder="—" ${disabledAttr}>
                     </div>
-                    <div class="campo-box destaque-media">
-                        <label>Média Atual</label>
-                        <div class="valor-calculado" id="media-box-${m.id}">${mediaStr}</div>
-                    </div>
                     <div class="campo-box">
-                        <label>Faltas (1º / 2º / 3º Tri)</label>
+                        <label>Faltas (1º / 2º / 3º)</label>
                         <div class="faltas-trimestres">
                             <input type="number" min="0" class="input-falta" data-id="${m.id}" data-campo="f1" value="${m.f1}" ${disabledAttr}>
                             <input type="number" min="0" class="input-falta" data-id="${m.id}" data-campo="f2" value="${m.f2}" ${disabledAttr}>
                             <input type="number" min="0" class="input-falta" data-id="${m.id}" data-campo="f3" value="${m.f3}" ${disabledAttr}>
                         </div>
                     </div>
-                </div>
-                <div class="progresso-trilha">
-                    <div class="progresso-barra ${info.media !== null && info.media < 6 ? 'baixo' : ''}" id="barra-${m.id}" style="width: ${larguraBarra}%"></div>
+                    <div class="campo-box">
+                        <label>Média Atual</label>
+                        <div class="valor-calculado" id="media-box-${m.id}">${mediaStr}</div>
+                    </div>
                 </div>
             </div>
         `;
@@ -405,22 +392,15 @@ function atualizarCardIndividual(m) {
     const mediaStr = formatarNota(info.media);
 
     const badge = document.getElementById(`badge-${m.id}`);
-    const pilulaMedia = document.getElementById(`pilula-media-${m.id}`);
-    const pilulaFaltas = document.getElementById(`pilula-faltas-${m.id}`);
+    const resumoMedia = document.getElementById(`resumo-media-${m.id}`);
     const mediaBox = document.getElementById(`media-box-${m.id}`);
-    const barra = document.getElementById(`barra-${m.id}`);
 
     if (badge) {
         badge.className = `badge-status ${info.statusClass}`;
         badge.innerText = info.statusLabel;
     }
-    if (pilulaMedia) pilulaMedia.innerText = `Média: ${mediaStr}`;
-    if (pilulaFaltas) pilulaFaltas.innerText = `Faltas: ${info.totalFaltas}`;
+    if (resumoMedia) resumoMedia.innerText = mediaStr;
     if (mediaBox) mediaBox.innerText = mediaStr;
-    if (barra) {
-        barra.style.width = `${info.media !== null ? Math.min(100, info.media * 10) : 0}%`;
-        barra.className = `progresso-barra ${info.media !== null && info.media < 6 ? 'baixo' : ''}`;
-    }
 }
 
 function renderizarTabelaGeral() {
@@ -447,11 +427,10 @@ function renderizarGraficos() {
     if (typeof Chart === 'undefined') return;
 
     const isLight = document.body.classList.contains('light-mode');
-    const corTexto = isLight ? '#54333d' : '#cbb5bc';
-    const corGrade = isLight ? '#e4cfd5' : '#36151e';
-    const corVinho = isLight ? '#8f162b' : '#d93854';
-    const corAlerta = isLight ? '#e11d48' : '#ff4d6d';
-    const corFaltas = isLight ? '#a81c34' : '#f26b83';
+    const corTexto = isLight ? '#573d45' : '#b5a3a9';
+    const corGrade = isLight ? '#e6d8dc' : '#2b1a21';
+    const corVinho = isLight ? '#8f162b' : '#bd223e';
+    const corAlerta = isLight ? '#e11d48' : '#fda4af';
 
     const comNota = materias.map(m => ({ nome: m.disciplina, info: calcularInfoMateria(m) }))
                             .filter(x => x.info.media !== null);
@@ -465,7 +444,7 @@ function renderizarGraficos() {
                 label: 'Média',
                 data: comNota.map(x => Number(x.info.media.toFixed(1))),
                 backgroundColor: comNota.map(x => x.info.media >= 6 ? corVinho : corAlerta),
-                borderRadius: 6
+                borderRadius: 5
             }]
         },
         options: {
@@ -487,10 +466,10 @@ function renderizarGraficos() {
     chartStatus = new Chart(document.getElementById('chartStatus'), {
         type: 'doughnut',
         data: {
-            labels: ['Na Média (≥ 6,0)', 'Atenção (< 6,0)', 'Sem Notas'],
+            labels: ['Na Média', 'Atenção', 'Pendente'],
             datasets: [{
                 data: [bom, atencao, pendente],
-                backgroundColor: ['#2dd4bf', corAlerta, '#64748b'],
+                backgroundColor: [corVinho, corAlerta, '#4a353c'],
                 borderWidth: 0
             }]
         },
@@ -509,8 +488,8 @@ function renderizarGraficos() {
             datasets: [{
                 label: 'Faltas',
                 data: materias.map(m => calcularInfoMateria(m).totalFaltas),
-                backgroundColor: corFaltas,
-                borderRadius: 5
+                backgroundColor: '#7a192a',
+                borderRadius: 4
             }]
         },
         options: {
@@ -525,34 +504,29 @@ function renderizarGraficos() {
     });
 }
 
-// --- CONTROLES E EVENTOS ---
+// --- EVENTOS ---
 function configurarEventos() {
     const btnTema = document.getElementById('btn-tema');
     if (localStorage.getItem('boletim_tema_light') === 'true') {
         document.body.classList.add('light-mode');
-        btnTema.innerText = '🌙';
     }
 
     btnTema.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
-        const isLight = document.body.classList.contains('light-mode');
-        btnTema.innerText = isLight ? '🌙' : '☀️';
-        localStorage.setItem('boletim_tema_light', isLight);
+        localStorage.setItem('boletim_tema_light', document.body.classList.contains('light-mode'));
         renderizarGraficos();
     });
 
     const btnEdicao = document.getElementById('btn-modo-edicao');
-    const bannerEdicao = document.getElementById('banner-edicao');
     btnEdicao.addEventListener('click', () => {
         modoEdicao = !modoEdicao;
-        btnEdicao.classList.toggle('btn-editar-ativo', modoEdicao);
-        btnEdicao.innerText = modoEdicao ? "✏️ Editando Notas" : "🔒 Edição Bloqueada";
-        bannerEdicao.classList.toggle('escondido', !modoEdicao);
+        btnEdicao.classList.toggle('ativo', modoEdicao);
+        btnEdicao.innerText = modoEdicao ? "Edição: On" : "Edição: Off";
         renderizarListaMaterias();
     });
 
     document.getElementById('btn-puxar-drive').addEventListener('click', () => {
-        if (confirm("Deseja substituir as edições locais pelos dados atuais da planilha do Google Drive?")) {
+        if (confirm("Substituir as edições locais pelos dados da planilha do Google Drive?")) {
             localStorage.removeItem(STORAGE_KEY);
             sincronizarComDrive(true);
         }
@@ -582,7 +556,7 @@ function configurarEventos() {
     const btnExpandir = document.getElementById('btn-expandir-tudo');
     btnExpandir.addEventListener('click', () => {
         expandirTodas = !expandirTodas;
-        btnExpandir.innerText = expandirTodas ? "Recolher Todas" : "Expandir Todas";
+        btnExpandir.innerText = expandirTodas ? "Recolher todas" : "Expandir todas";
         renderizarListaMaterias();
     });
 }
