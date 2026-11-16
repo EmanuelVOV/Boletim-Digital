@@ -3,68 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boletim Digital - 8º Ano</title>
+    <title>Boletim Digital - Escola Paraná</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Tela de Acesso / Login -->
+    <!-- Tela de Autenticação / Senha -->
     <div id="tela-login" class="tela-login">
         <div class="login-card">
-            <h2>Acesso Restrito 🔐</h2>
-            <p>Digite a senha para visualizar o boletim:</p>
-            <input type="password" id="campo-senha" placeholder="Digite a senha..." autofocus>
-            <button id="btn-entrar">Entrar</button>
+            <div class="login-icon">🏫</div>
+            <h2>Boletim Escolar</h2>
+            <p>Digite sua senha de acesso para visualizar o boletim:</p>
+            <input type="password" id="campo-senha" placeholder="Sua senha..." autofocus>
+            <button id="btn-entrar">Acessar Boletim</button>
             <p id="msg-erro" class="msg-erro"></p>
         </div>
     </div>
 
-    <!-- Conteúdo do Boletim (Escondido até autenticar) -->
+    <!-- Conteúdo do Boletim -->
     <div id="conteudo-boletim" class="escondido">
+        
+        <!-- Cabeçalho / Perfil do Estudante -->
         <header class="cabecalho">
             <div class="cabecalho-topo">
-    <h1>Boletim Digital</h1>
-    <a href="./grafico.html" target="_blank" class="btn-grafico" title="Ver Gráficos">📊</a>
-    <button id="btn-tema" class="btn-tema" title="Alternar tema">🌙</button>
-</div>
-                <h1>Boletim Digital</h1>
-                <button id="btn-tema" class="btn-tema" title="Alternar tema">🌙</button>
+                <div class="estudante-perfil">
+                    <div class="avatar">🎓</div>
+                    <div class="info-aluno">
+                        <h1>Estudante Exemplo</h1>
+                        <p>Colégio Estadual • 8º Ano Fundamental</p>
+                    </div>
+                </div>
+                <div class="acoes-topo">
+                    <a href="./grafico.html" target="_blank" class="btn-icone" title="Ver Gráfico de Desempenho">📊</a>
+                    <button id="btn-tema" class="btn-icone" title="Alternar tema">🌙</button>
+                </div>
             </div>
-            <h2>8º Ano</h2>
-            <p class="estudante">Estudante: <strong>Estudante Exemplo</strong></p>
         </header>
 
         <main class="conteudo-principal">
-            <!-- Cards de Resumo -->
+            
+            <!-- Cards de Métricas Gerais -->
             <section class="cards-container">
                 <div class="card">
-                    <h3>Média Geral</h3>
+                    <span class="card-label">Média Geral</span>
                     <p id="card-media" class="card-valor">—</p>
                 </div>
 
                 <div class="card">
-                    <h3>Total de Faltas</h3>
+                    <span class="card-label">Total Faltas</span>
                     <p id="card-faltas" class="card-valor">—</p>
                 </div>
 
                 <div class="card">
-                    <h3>Bom Desempenho</h3>
+                    <span class="card-label">Bom Desempenho</span>
                     <p id="card-bom-desempenho" class="card-valor">—</p>
                 </div>
 
                 <div class="card">
-                    <h3>Precisam de Atenção</h3>
+                    <span class="card-label">Em Atenção</span>
                     <p id="card-atencao" class="card-valor">—</p>
                 </div>
 
                 <div class="card">
-                    <h3>Frequência Geral</h3>
+                    <span class="card-label">Frequência Geral</span>
                     <p id="card-frequencia" class="card-valor">—</p>
                     <span id="card-frequencia-texto" class="card-subtexto"></span>
                 </div>
             </section>
 
-            <!-- Sessões por Matéria -->
+            <!-- Barra de Busca e Filtro de Disciplinas -->
+            <div class="barra-pesquisa">
+                <input type="text" id="input-busca" placeholder="🔍 Pesquisar disciplina (ex: Matemática)...">
+            </div>
+
+            <!-- Listagem das Disciplinas (Estilo Acordeão) -->
             <section id="materias-container" class="materias-container">
             </section>
         </main>

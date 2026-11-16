@@ -1,12 +1,12 @@
-// SENHA DE ACESSO DO BOLETIM
+// Configuração de Segurança e Dados
 const SENHA_CORRETA = "Mell07312002";
-
-// Link da Planilha do Google Drive
 const SPREADSHEET_ID = "1yhQkt8Q6tlIvcg5Fon3mdXZ3cMR-mnTXi7A7gDxXxPc";
 const URL_NOTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Notas`;
 const URL_FALTAS = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Faltas`;
 
-// DADOS DE RESERVA (Plano B)
+let listaCompletaMaterias = [];
+
+// Dados Locais de Reserva (Plano B)
 const dadosBoletimReserva = [
   { disciplina: "Língua Portuguesa", tri1: 82, tri2: "7,8", tri3: 85, faltas: [2, 1, 1] },
   { disciplina: "Matemática", tri1: 52, tri2: "5,8", tri3: null, faltas: [3, 2, 1] },
@@ -25,7 +25,7 @@ const dadosBoletimReserva = [
   { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] }
 ];
 
-// LÓGICA DE AUTENTICAÇÃO POR SENHA
+// Autenticação
 function inicializarSeguranca() {
     const btnEntrar = document.getElementById('btn-entrar');
     const campoSenha = document.getElementById('campo-senha');
@@ -34,30 +34,24 @@ function inicializarSeguranca() {
     const conteudoBoletim = document.getElementById('conteudo-boletim');
 
     function validarSenha() {
-        const senhaDigitada = campoSenha.value;
-
-        if (senhaDigitada === SENHA_CORRETA) {
+        if (campoSenha.value === SENHA_CORRETA) {
             telaLogin.classList.add('escondido');
             conteudoBoletim.classList.remove('escondido');
-            carregarBoletim(); // Carrega os dados somente após senha correta
+            carregarBoletim();
         } else {
-            msgErro.innerText = "Senha incorreta! Tente novamente.";
+            msgErro.innerText = "Senha incorreta!";
             campoSenha.value = "";
             campoSenha.focus();
         }
     }
 
     btnEntrar.addEventListener('click', validarSenha);
-
-    // Permite pressionar Enter no teclado para entrar
     campoSenha.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            validarSenha();
-        }
+        if (e.key === 'Enter') validarSenha();
     });
 }
 
-// LÓGICA DO BOTÃO DE TEMA
+// Alternância de Tema
 function inicializarTema() {
     const btnTema = document.getElementById('btn-tema');
     if (!btnTema) return;
@@ -65,6 +59,20 @@ function inicializarTema() {
     btnTema.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
         btnTema.innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+    });
+}
+
+// Filtro/Busca de Matérias
+function inicializarBusca() {
+    const inputBusca = document.getElementById('input-busca');
+    if (!inputBusca) return;
+
+    inputBusca.addEventListener('input', (e) => {
+        const termo = e.target.value.toLowerCase().trim();
+        const filtradas = listaCompletaMaterias.filter(item => 
+            item.disciplina.toLowerCase().includes(termo)
+        );
+        renderizarMaterias(filtradas);
     });
 }
 
@@ -81,8 +89,7 @@ function normalizarNota(valor) {
 }
 
 function parseCSV(textoCSV) {
-    const linhas = textoCSV.split('\n');
-    return linhas.map(linha => {
+    return textoCSV.split('\n').map(linha => {
         return linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(celula => 
             celula.replace(/^"|"$/g, '').trim()
         );
@@ -118,7 +125,7 @@ function renderizarMaterias(lista) {
         const notasDisponiveis = [n1, n2, n3].filter(n => n !== null);
 
         let mediaTexto = "—";
-        let situacaoTexto = "Nota ainda não disponível";
+        let situacaoTexto = "Pendente";
         let situacaoClasse = "situacao-indisponivel";
 
         if (notasDisponiveis.length > 0) {
@@ -174,14 +181,14 @@ function renderizarMaterias(lista) {
             </div>
         `;
 
-        const header = cardMateria.querySelector('.materia-header');
-        header.addEventListener('click', () => {
+        cardMateria.querySelector('.materia-header').addEventListener('click', () => {
             cardMateria.classList.toggle('aberto');
         });
 
         containerMaterias.appendChild(cardMateria);
     });
 
+    // Atualização dos Cards de Métricas
     const mediaGeralFinal = disciplinasComMedia > 0 
         ? (somaDasMedias / disciplinasComMedia).toFixed(1).replace('.', ',') 
         : "—";
@@ -196,6 +203,7 @@ function renderizarMaterias(lista) {
 
 async function carregarBoletim() {
     inicializarTema();
+    inicializarBusca();
 
     try {
         const [respostaNotas, respostaFaltas] = await Promise.all([
@@ -203,7 +211,7 @@ async function carregarBoletim() {
             fetch(URL_FALTAS)
         ]);
 
-        if (!respostaNotas.ok || !respostaFaltas.ok) throw new Error("Falha ao acessar o Google Drive.");
+        if (!respostaNotas.ok || !respostaFaltas.ok) throw new Error("Erro na conexão com o Drive");
 
         const textoNotas = await respostaNotas.text();
         const textoFaltas = await respostaFaltas.text();
@@ -211,7 +219,7 @@ async function carregarBoletim() {
         const matrizNotas = parseCSV(textoNotas);
         const matrizFaltas = parseCSV(textoFaltas);
 
-        let listaDoDrive = [];
+        listaCompletaMaterias = [];
 
         for (let i = 1; i <= 15; i++) {
             if (!matrizNotas[i] || matrizNotas[i].length < 4) continue;
@@ -223,7 +231,7 @@ async function carregarBoletim() {
                 f3 = Number(matrizFaltas[i][3]) || 0;
             }
 
-            listaDoDrive.push({
+            listaCompletaMaterias.push({
                 disciplina: matrizNotas[i][0],
                 tri1: matrizNotas[i][1],
                 tri2: matrizNotas[i][2],
@@ -232,17 +240,14 @@ async function carregarBoletim() {
             });
         }
 
-        if (listaDoDrive.length > 0) {
-            renderizarMaterias(listaDoDrive);
-        } else {
-            renderizarMaterias(dadosBoletimReserva);
-        }
+        renderizarMaterias(listaCompletaMaterias);
 
     } catch (erro) {
-        console.warn("Usando dados locais de reserva:", erro);
-        renderizarMaterias(dadosBoletimReserva);
+        console.warn("Utilizando banco de dados local:", erro);
+        listaCompletaMaterias = dadosBoletimReserva;
+        renderizarMaterias(listaCompletaMaterias);
     }
 }
 
-// Inicializa a escuta de senha ao abrir a página
+// Inicia o fluxo
 inicializarSeguranca();
